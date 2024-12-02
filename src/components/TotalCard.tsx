@@ -2,10 +2,12 @@ function TotalCard({
   title,
   color,
   amount,
+  setModal,
 }: {
   title: string;
   color: string;
   amount: number;
+  setModal: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   return (
     <div
@@ -18,7 +20,12 @@ function TotalCard({
           {amount} <span className="font-aptosSemiBold text-lg">pln</span>
         </p>
       </div>
-      <button className="btn_1 absolute top-2 right-2">+</button>
+      <button
+        className="btn_1 absolute top-2 right-2"
+        onClick={() => setModal(true)}
+      >
+        +
+      </button>
     </div>
   );
 }
