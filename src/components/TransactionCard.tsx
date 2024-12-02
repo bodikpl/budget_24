@@ -14,7 +14,7 @@ function TransactionCard({
   description?: string;
 }) {
   return (
-    <div className="flex items-center p-2 overflow-hidden border-b border-neutral-200 last:border-none">
+    <div className="flex items-center p-3 overflow-hidden border-b border-neutral-200 last:border-none">
       <div className="aspect-square w-10 h-10 rounded-full text-3xl leading-none flex justify-center items-center bg-yellow-100">
         +
       </div>
