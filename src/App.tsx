@@ -19,7 +19,7 @@ function App() {
           </div>
 
           <div className="flex flex-col items-end">
-            <p className="text-neutral-500">Бюджет 72%</p>
+            <p className="font-aptosSemiBold">Бюджет 72%</p>
             <p className="text-xl font-aptosBold leading-none">
               3800 / 9200 zl
             </p>
