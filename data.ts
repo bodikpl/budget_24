@@ -28,3 +28,15 @@ export const accounts = [
     balance: 401,
   },
 ];
+
+export const transactions = [
+  {
+    id: "1",
+    category: "Продукты",
+    accountTitle: "ПриватБанк",
+    amount: -400,
+    currency: "грн",
+    date: "01.12",
+    description: "Карфур покупка",
+  },
+];
