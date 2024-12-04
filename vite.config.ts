@@ -54,7 +54,7 @@ const manifestForPlugin: any = {
     background_color: "#f5f5f5",
     display: "standalone",
     scope: "/",
-    start_url: "/",
+    start_url: "/budget_24/",
     orientation: "portrait",
   },
 };
