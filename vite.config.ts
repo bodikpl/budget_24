@@ -61,4 +61,5 @@ const manifestForPlugin: any = {
 
 export default defineConfig({
   plugins: [react(), VitePWA(manifestForPlugin)],
+  base: "/budget_24",
 });
