@@ -1,12 +1,19 @@
 import { useState } from "react";
 import Modal from "../Modal";
+import HeadModal from "../ModalContents/HeadModal";
 
 function Head() {
   const [settingsModal, setSettingsModal] = useState(false);
   const [budgetModal, setBudgetModal] = useState(false);
   return (
     <>
-      {settingsModal && <Modal title="Настройки" setModal={setSettingsModal} />}
+      {settingsModal && (
+        <Modal
+          title="Настройки"
+          setModal={setSettingsModal}
+          node={<HeadModal />}
+        />
+      )}
       {budgetModal && <Modal title="Бюджет" setModal={setBudgetModal} />}
 
       <section className="flex justify-between items-center">

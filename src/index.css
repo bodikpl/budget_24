@@ -30,6 +30,9 @@
 #root {
   @apply bg-neutral-100 min-h-dvh font-aptos;
 }
+input {
+  @apply outline-none;
+}
 
 h3 {
   @apply font-aptosSemiBold text-lg;
@@ -37,4 +40,8 @@ h3 {
 
 .btn_1 {
   @apply bg-black/5 aspect-square w-10 h-10 rounded-full text-3xl leading-none transition-colors hover:bg-black/10;
+}
+
+.btn_2 {
+  @apply w-full bg-black/5 aspect-square px-4 h-10 rounded-lg leading-none transition-colors hover:bg-black/10;
 }

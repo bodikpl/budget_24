@@ -18,6 +18,7 @@ function Transactions() {
           <div className="mt-2 bg-white shadow-lg rounded-lg">
             {transactions.map((transaction) => (
               <TransactionCard
+                key={transaction.id}
                 category={transaction.category}
                 accountTitle={transaction.accountTitle}
                 amount={transaction.amount}

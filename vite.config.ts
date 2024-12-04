@@ -45,7 +45,7 @@ const manifestForPlugin: any = {
       },
       {
         src: "/budget_24/maskable_icon.png",
-        sizes: "2400x1080",
+        sizes: "080x2400",
         type: "image/png",
         purpose: "any maskable",
       },
