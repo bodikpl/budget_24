@@ -38,7 +38,7 @@ const manifestForPlugin: any = {
         type: "image/png",
       },
       {
-        src: "/apple-touch-icon.png",
+        src: "/budget_24/apple-touch-icon.png",
         sizes: "180x180",
         type: "image/png",
         purpose: "apple touch icon",
