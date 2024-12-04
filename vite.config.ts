@@ -53,7 +53,7 @@ const manifestForPlugin: any = {
     theme_color: "#f5f5f5",
     background_color: "#f5f5f5",
     display: "standalone",
-    scope: "/",
+    scope: "/budget_24/",
     start_url: "/budget_24/",
     orientation: "portrait",
   },
