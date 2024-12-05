@@ -2,10 +2,10 @@ import { useState } from "react";
 import { CURRENCY } from "../../../data";
 import { useLocalStorage } from "usehooks-ts";
 
-type HeadModalProps = {};
+type SettingsModalContentProps = {};
 type CurrencyProps = { id: string; title: string; exchangeRate: number };
 
-export default function HeadModal({}: HeadModalProps) {
+export default function SettingsModalContent({}: SettingsModalContentProps) {
   const [localMainCurrency, setLocalMainCurrency] = useLocalStorage(
     "localMainCurrency",
     ""
@@ -31,7 +31,7 @@ export default function HeadModal({}: HeadModalProps) {
   };
 
   return (
-    <div>
+    <>
       <h3>
         {mainCurrency
           ? `Основная валюта ${mainCurrency}`
@@ -59,11 +59,14 @@ export default function HeadModal({}: HeadModalProps) {
             {localCurrency
               .filter((currency) => currency.title !== mainCurrency)
               .map(({ id, title, exchangeRate }) => (
-                <div key={id} className="flex items-center gap-4">
+                <div
+                  key={id}
+                  className="flex items-center gap-4 border-r last:border-none"
+                >
                   <p>{title}</p>
                   <input
                     type="number"
-                    className="w-20"
+                    className="w-full"
                     value={exchangeRate || ""}
                     onChange={(e) =>
                       handleExchangeRateChange(id, parseFloat(e.target.value))
@@ -74,6 +77,6 @@ export default function HeadModal({}: HeadModalProps) {
           </div>
         </>
       )}
-    </div>
+    </>
   );
 }

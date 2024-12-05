@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Modal from "./Modal";
-import Transaction from "./ModalContents/Transaction";
+import TransactionContent from "./ModalContents/TransactionContent";
 
 function TransactionCard({
   category,
@@ -25,7 +25,7 @@ function TransactionCard({
           title="Транзакция"
           setModal={setTransactionModal}
           node={
-            <Transaction
+            <TransactionContent
               category={category}
               accountTitle={accountTitle}
               amount={amount}
