@@ -16,13 +16,6 @@ export default function Modal({ title, setModal, node }: ModalProps) {
         </div>
 
         <div className="py-4">{node}</div>
-
-        <button
-          className="ml-auto block bg-black/5 aspect-square px-4 h-10 rounded-lg leading-none transition-colors hover:bg-black/10"
-          onClick={() => setModal(false)}
-        >
-          Сохранить
-        </button>
       </div>
     </div>
   );

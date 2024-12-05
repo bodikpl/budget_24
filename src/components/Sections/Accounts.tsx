@@ -1,13 +1,23 @@
 import { useState } from "react";
-import { accounts } from "../../../data";
 import AccountCard from "../AccountCard";
 import Modal from "../Modal";
+import AddingAccountModalContent, {
+  Account,
+} from "../ModalContents/AddingAccountModalContent";
+import { useLocalStorage } from "usehooks-ts";
 
 function Accounts() {
   const [modal, setModal] = useState(false);
+  const [localAccounts] = useLocalStorage<Account[]>("localAccounts", []);
   return (
     <>
-      {modal && <Modal title="Счета" setModal={setModal} />}
+      {modal && (
+        <Modal
+          title="Добавить счет"
+          setModal={setModal}
+          node={<AddingAccountModalContent setModal={setModal} />}
+        />
+      )}
 
       <section>
         <div className="flex justify-between items-end">
@@ -17,9 +27,9 @@ function Accounts() {
           </button>
         </div>
 
-        {accounts.length > 0 ? (
+        {localAccounts.length > 0 ? (
           <div className="mt-4 grid grid-cols-2 gap-2 items-center">
-            {accounts.map((account) => (
+            {localAccounts.map((account) => (
               <AccountCard
                 key={account.id}
                 title={account.title}

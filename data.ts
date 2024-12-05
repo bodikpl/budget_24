@@ -1,3 +1,10 @@
+export const COLORS = [
+  "bg-[#EA4335]",
+  "bg-[#FFB705]",
+  "bg-[#34A853]",
+  "bg-[#4285F4]",
+];
+
 export const CURRENCY = [
   { id: "1", title: "грн", exchangeRate: 1 },
   { id: "2", title: "pln", exchangeRate: 1 },
@@ -10,28 +17,28 @@ export const accounts = [
     id: "1",
     title: "Santander",
     currency: "pln",
-    color: "#EA4335",
+    color: COLORS[0],
     balance: 5434.4,
   },
   {
     id: "2",
     title: "ПриватБанк",
     currency: "грн",
-    color: "#FFB705",
+    color: COLORS[1],
     balance: 2500.8,
   },
   {
     id: "3",
     title: "ПриватБанк",
     currency: "€",
-    color: "#34A853",
+    color: COLORS[2],
     balance: 3100.5,
   },
   {
     id: "4",
     title: "Наличные",
     currency: "pln",
-    color: "#4285F4",
+    color: COLORS[3],
     balance: 401,
   },
 ];

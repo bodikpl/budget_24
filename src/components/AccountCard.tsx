@@ -7,12 +7,11 @@ function AccountCard({
   title: string;
   color: string;
   currency: string;
-  balance: number;
+  balance: string | number;
 }) {
   return (
     <div
-      style={{ backgroundColor: color }}
-      className="rounded-lg p-2 w-full flex justify-between items-start text-xs text-white font-aptosSemiBold"
+      className={`${color} rounded-lg p-2 w-full flex justify-between items-start text-xs text-white font-aptosSemiBold`}
     >
       <div>
         <p>
