@@ -2,6 +2,9 @@ import { useState } from "react";
 import { CURRENCY } from "../../../data";
 import { useLocalStorage } from "usehooks-ts";
 import { Currency } from "../../lib/types";
+import Modal from "../Modal";
+import IncomeCategoriesModalContent from "./IncomeCategoriesModalContent";
+import ExpensesCategoriesModalContent from "./ExpensesCategoriesModalContent";
 
 type SettingsModalContentProps = {
   setModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -34,8 +37,32 @@ export default function SettingsModalContent({
     );
   };
 
+  const [incomeCategoriesModal, setIncomeCategoriesModal] = useState(false);
+  const [expensesCategoriesModal, setExpensesCategoriesModal] = useState(false);
+
   return (
     <>
+      {incomeCategoriesModal && (
+        <Modal
+          title="Категории доходов"
+          setModal={setIncomeCategoriesModal}
+          node={
+            <IncomeCategoriesModalContent setModal={setIncomeCategoriesModal} />
+          }
+        />
+      )}
+      {expensesCategoriesModal && (
+        <Modal
+          title="Категории расходов"
+          setModal={setExpensesCategoriesModal}
+          node={
+            <ExpensesCategoriesModalContent
+              setModal={setExpensesCategoriesModal}
+            />
+          }
+        />
+      )}
+
       <h3>
         {mainCurrency
           ? `Основная валюта ${mainCurrency}`
@@ -76,14 +103,33 @@ export default function SettingsModalContent({
                 </div>
               ))}
           </div>
-          <button
-            className="mt-4 ml-auto block bg-black/5 aspect-square px-4 h-10 rounded-lg leading-none transition-colors hover:bg-black/10 disabled:hidden"
-            onClick={() => setModal(false)}
-            disabled={!mainCurrency}
-          >
-            Сохранить
-          </button>
         </>
+      )}
+
+      <h3 className="mt-4">Категории</h3>
+      <div className="mt-1 grid grid-cols-2 gap-4">
+        <button
+          className="btn_2"
+          onClick={() => setIncomeCategoriesModal(true)}
+        >
+          Доходы
+        </button>
+        <button
+          className="btn_2"
+          onClick={() => setExpensesCategoriesModal(true)}
+        >
+          Расходы
+        </button>
+      </div>
+
+      {mainCurrency && (
+        <button
+          className="mt-4 ml-auto block bg-black/5 aspect-square px-4 h-10 rounded-lg leading-none transition-colors hover:bg-black/10 disabled:hidden"
+          onClick={() => setModal(false)}
+          disabled={!mainCurrency}
+        >
+          Сохранить
+        </button>
       )}
     </>
   );
