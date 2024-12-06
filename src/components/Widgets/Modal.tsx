@@ -15,7 +15,7 @@ export default function Modal({ title, setModal, node }: ModalProps) {
           </button>
         </div>
 
-        <div className="py-4">{node}</div>
+        <div className="pt-4">{node}</div>
       </div>
     </div>
   );

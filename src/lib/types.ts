@@ -12,3 +12,13 @@ export type Account = {
   color: string;
   balance: string | number;
 };
+
+export type Transacion = {
+  id: string;
+  category: string;
+  accountTitle: string;
+  currency: string;
+  description: string;
+  amount: string | number;
+  date: number;
+};

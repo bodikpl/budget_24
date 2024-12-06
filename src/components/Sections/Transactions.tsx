@@ -1,10 +1,16 @@
 import { useState } from "react";
 import Modal from "../Widgets/Modal";
-import { transactions } from "../../lib/data";
 import TransactionCard from "../Widgets/TransactionCard";
+import { useLocalStorage } from "usehooks-ts";
+import { Transacion } from "../../lib/types";
 
 function Transactions() {
   const [modal, setModal] = useState(false);
+  const [localIncomeTransacions] = useLocalStorage<Transacion[]>(
+    "localIncomeTransacions",
+    []
+  );
+  const transactions = [...localIncomeTransacions];
   return (
     <>
       {modal && <Modal title="Счета" setModal={setModal} />}
@@ -17,15 +23,7 @@ function Transactions() {
         {transactions.length > 0 ? (
           <div className="mt-2 bg-white shadow-lg rounded-lg">
             {transactions.map((transaction) => (
-              <TransactionCard
-                key={transaction.id}
-                category={transaction.category}
-                accountTitle={transaction.accountTitle}
-                amount={transaction.amount}
-                currency={transaction.currency}
-                date={transaction.date}
-                description={transaction.description}
-              />
+              <TransactionCard key={transaction.id} transaction={transaction} />
             ))}
           </div>
         ) : (

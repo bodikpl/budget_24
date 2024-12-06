@@ -1,22 +1,11 @@
 import { useState } from "react";
 import Modal from "./Modal";
 import TransactionModalContent from "../ModalContents/TransactionModalContent";
+import { Transacion } from "../../lib/types";
 
-function TransactionCard({
-  category,
-  amount,
-  accountTitle,
-  currency,
-  date,
-  description,
-}: {
-  category: string;
-  amount: number;
-  accountTitle: string;
-  currency: string;
-  date: string;
-  description?: string;
-}) {
+type TransactionCardProps = { transaction: Transacion };
+
+export default function TransactionCard({ transaction }: TransactionCardProps) {
   const [transactionModal, setTransactionModal] = useState(false);
   return (
     <>
@@ -24,16 +13,7 @@ function TransactionCard({
         <Modal
           title="Транзакция"
           setModal={setTransactionModal}
-          node={
-            <TransactionModalContent
-              category={category}
-              accountTitle={accountTitle}
-              amount={amount}
-              currency={currency}
-              date={date}
-              description={description}
-            />
-          }
+          node={<TransactionModalContent transaction={transaction} />}
         />
       )}
 
@@ -48,16 +28,17 @@ function TransactionCard({
         <div className="w-full ml-4 flex flex-col justify-center">
           <div className="flex gap-4 justify-between items-center">
             <p>
-              {date} - {category}
+              {transaction.date} - {transaction.category}
             </p>
             <p className="whitespace-nowrap text-right text-[#EA4335] text-xl font-aptosBold">
-              {amount} <span className="text-xs">{currency}</span>
+              {transaction.amount}{" "}
+              <span className="text-xs">{transaction.currency}</span>
             </p>
           </div>
           <div className="flex gap-4 justify-between text-xs text-neutral-500">
-            <p>{description}</p>
+            <p>{transaction.description}</p>
             <p className="whitespace-nowrap font-aptosSemiBold">
-              {accountTitle}, {currency}
+              {transaction.accountTitle}, {transaction.currency}
             </p>
           </div>
         </div>
@@ -65,4 +46,3 @@ function TransactionCard({
     </>
   );
 }
-export default TransactionCard;

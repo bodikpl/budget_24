@@ -1,27 +1,18 @@
-function TransactionModalContent({
-  category,
-  amount,
-  accountTitle,
-  currency,
-  date,
-  description,
-}: {
-  category: string;
-  amount: number;
-  accountTitle: string;
-  currency: string;
-  date: string;
-  description?: string;
-}) {
+import { Transacion } from "../../lib/types";
+
+type TransactionModalContentProps = { transaction: Transacion };
+
+export default function TransactionModalContent({
+  transaction,
+}: TransactionModalContentProps) {
   return (
     <div>
-      <h3>{category}</h3>
-      <p>{amount}</p>
-      <p>{accountTitle}</p>
-      <p>{currency}</p>
-      <p>{date}</p>
-      <p>{description}</p>
+      <h3>{transaction.category}</h3>
+      <p>{transaction.amount}</p>
+      <p>{transaction.accountTitle}</p>
+      <p>{transaction.currency}</p>
+      <p>{transaction.date}</p>
+      <p>{transaction.description}</p>
     </div>
   );
 }
-export default TransactionModalContent;
