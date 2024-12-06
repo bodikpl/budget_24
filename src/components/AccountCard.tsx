@@ -7,6 +7,7 @@ type AccountCardProps = { account: Account };
 
 export default function AccountCard({ account }: AccountCardProps) {
   const [modal, setModal] = useState(false);
+
   return (
     <>
       {modal && (

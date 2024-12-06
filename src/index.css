@@ -27,9 +27,10 @@
   font-style: normal;
 }
 
-#root {
-  @apply bg-neutral-100 min-h-dvh font-aptos;
+body {
+  @apply font-aptos bg-neutral-100;
 }
+
 input {
   @apply outline-none;
 }
