@@ -29,13 +29,7 @@ function Accounts() {
         {localAccounts.length > 0 ? (
           <div className="mt-4 grid grid-cols-2 gap-2 items-center">
             {localAccounts.map((account) => (
-              <AccountCard
-                key={account.id}
-                title={account.title}
-                currency={account.currency}
-                color={account.color}
-                balance={account.balance}
-              />
+              <AccountCard key={account.id} account={account} />
             ))}
           </div>
         ) : (
