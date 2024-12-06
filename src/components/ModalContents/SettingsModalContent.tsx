@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { CURRENCY } from "../../../data";
+import { CURRENCY } from "../../lib/data";
 import { useLocalStorage } from "usehooks-ts";
 import { Currency } from "../../lib/types";
-import Modal from "../Modal";
+import Modal from "../Widgets/Modal";
 import IncomeCategoriesModalContent from "./IncomeCategoriesModalContent";
 import ExpensesCategoriesModalContent from "./ExpensesCategoriesModalContent";
 

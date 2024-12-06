@@ -1,5 +1,5 @@
 import { useLocalStorage } from "usehooks-ts";
-import { COLORS, CURRENCY } from "../../../data";
+import { COLORS, CURRENCY } from "../../lib/data";
 import { useState } from "react";
 import { Account } from "../../lib/types";
 

@@ -1,7 +1,7 @@
 import { useState } from "react";
-import Modal from "../Modal";
-import TransactionCard from "../TransactionCard";
-import { transactions } from "../../../data";
+import Modal from "../Widgets/Modal";
+import { transactions } from "../../lib/data";
+import TransactionCard from "../Widgets/TransactionCard";
 
 function Transactions() {
   const [modal, setModal] = useState(false);

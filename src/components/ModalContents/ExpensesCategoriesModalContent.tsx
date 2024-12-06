@@ -1,4 +1,4 @@
-import { EXPENSES_CATEGORIES } from "../../../data";
+import { EXPENSES_CATEGORIES } from "../../lib/data";
 
 type ExpensesCategoriesModalContentProps = {
   setModal: React.Dispatch<React.SetStateAction<boolean>>;

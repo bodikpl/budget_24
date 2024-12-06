@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Modal from "./Modal";
-import TransactionModalContent from "./ModalContents/TransactionModalContent";
+import TransactionModalContent from "../ModalContents/TransactionModalContent";
 
 function TransactionCard({
   category,

@@ -1,49 +1,28 @@
-import { useLocalStorage } from "usehooks-ts";
 import { useState } from "react";
-import Modal from "../Modal";
-import TotalCard from "../TotalCard";
+import Modal from "../Widgets/Modal";
+import TotalCard from "../Widgets/TotalCard";
+import IncomeModalContent from "../ModalContents/IncomeModalContent";
+import ExpenseModalContent from "../ModalContents/ExpenseModalContent";
 
 function Totals() {
   const [incomeModal, setIncomeModal] = useState(false);
   const [expensesModal, setExpensesModal] = useState(false);
 
-  const [value, setValue, removeValue] = useLocalStorage("test-key", 0);
   return (
     <>
       {incomeModal && (
         <Modal
           title="Добавить доход"
           setModal={setIncomeModal}
-          node={
-            <div>
-              <p>Count: {value}</p>
-              <button
-                onClick={() => {
-                  setValue((x: number) => x + 1);
-                }}
-              >
-                Increment
-              </button>
-              <button
-                onClick={() => {
-                  setValue((x: number) => x - 1);
-                }}
-              >
-                Decrement
-              </button>
-              <button
-                onClick={() => {
-                  removeValue();
-                }}
-              >
-                Reset
-              </button>
-            </div>
-          }
+          node={<IncomeModalContent setModal={setIncomeModal} />}
         />
       )}
       {expensesModal && (
-        <Modal title="Внести расход" setModal={setExpensesModal} />
+        <Modal
+          title="Внести расход"
+          setModal={setExpensesModal}
+          node={<ExpenseModalContent setModal={setExpensesModal} />}
+        />
       )}
 
       <section className="bg-white shadow-lg p-2 rounded-xl flex gap-4">

@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Account } from "../lib/types";
+
+import { Account } from "../../lib/types";
 import Modal from "./Modal";
-import AccountModalContent from "./ModalContents/AccountModalContent";
+import AccountModalContent from "../ModalContents/AccountModalContent";
 
 type AccountCardProps = { account: Account };
 

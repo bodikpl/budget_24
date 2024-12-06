@@ -1,9 +1,9 @@
 import { useState } from "react";
-import AccountCard from "../AccountCard";
-import Modal from "../Modal";
+import Modal from "../Widgets/Modal";
 import AddingAccountModalContent from "../ModalContents/AddingAccountModalContent";
 import { useLocalStorage } from "usehooks-ts";
 import { Account } from "../../lib/types";
+import AccountCard from "../Widgets/AccountCard";
 
 function Accounts() {
   const [modal, setModal] = useState(false);

@@ -1,4 +1,4 @@
-import { INCOME_CATEGORIES } from "../../../data";
+import { INCOME_CATEGORIES } from "../../lib/data";
 
 type IncomeCategoriesModalContentProps = {
   setModal: React.Dispatch<React.SetStateAction<boolean>>;

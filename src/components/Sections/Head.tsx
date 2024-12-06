@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { useLocalStorage } from "usehooks-ts";
-import Modal from "../Modal";
+import Modal from "../Widgets/Modal";
 import SettingsModalContent from "../ModalContents/SettingsModalContent";
 import BudgetModalContent from "../ModalContents/BudgetModalContent";
 import BalanceModalContent from "../ModalContents/BalanceModalContent";
