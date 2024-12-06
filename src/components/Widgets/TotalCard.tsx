@@ -1,3 +1,5 @@
+import { useLocalStorage } from "usehooks-ts";
+
 function TotalCard({
   title,
   color,
@@ -6,9 +8,10 @@ function TotalCard({
 }: {
   title: string;
   color: string;
-  amount: number;
+  amount: number | string;
   setModal: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
+  const [localMainCurrency] = useLocalStorage("localMainCurrency", "");
   return (
     <div
       style={{ backgroundColor: color }}
@@ -16,8 +19,11 @@ function TotalCard({
     >
       <div>
         <p className="font-aptosSemiBold text-sm">{title}</p>
-        <p className="text-xl font-aptosBold">
-          {amount} <span className="font-aptosSemiBold text-lg">pln</span>
+        <p className="mt-4 text-xl font-aptosBold">
+          {amount}{" "}
+          <span className="font-aptosSemiBold text-lg">
+            {localMainCurrency}
+          </span>
         </p>
       </div>
       <button

@@ -1,16 +1,12 @@
 import { useState } from "react";
 import Modal from "../Widgets/Modal";
 import TransactionCard from "../Widgets/TransactionCard";
-import { useLocalStorage } from "usehooks-ts";
 import { Transacion } from "../../lib/types";
 
-function Transactions() {
+type TransactionsProps = { transactions: Transacion[] };
+
+export default function Transactions({ transactions }: TransactionsProps) {
   const [modal, setModal] = useState(false);
-  const [localIncomeTransacions] = useLocalStorage<Transacion[]>(
-    "localIncomeTransacions",
-    []
-  );
-  const transactions = [...localIncomeTransacions];
   return (
     <>
       {modal && <Modal title="Счета" setModal={setModal} />}
@@ -33,4 +29,3 @@ function Transactions() {
     </>
   );
 }
-export default Transactions;

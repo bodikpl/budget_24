@@ -2,11 +2,15 @@ import { useState } from "react";
 import Modal from "./Modal";
 import TransactionModalContent from "../ModalContents/TransactionModalContent";
 import { Transacion } from "../../lib/types";
+import { getFormattedDate } from "../../lib/fn";
 
 type TransactionCardProps = { transaction: Transacion };
 
 export default function TransactionCard({ transaction }: TransactionCardProps) {
   const [transactionModal, setTransactionModal] = useState(false);
+
+  const formattedDate = getFormattedDate(transaction.date);
+
   return (
     <>
       {transactionModal && (
@@ -28,7 +32,7 @@ export default function TransactionCard({ transaction }: TransactionCardProps) {
         <div className="w-full ml-4 flex flex-col justify-center">
           <div className="flex gap-4 justify-between items-center">
             <p>
-              {transaction.date} - {transaction.category}
+              {transaction.category}, {formattedDate}
             </p>
             <p className="whitespace-nowrap text-right text-[#EA4335] text-xl font-aptosBold">
               {transaction.amount}{" "}

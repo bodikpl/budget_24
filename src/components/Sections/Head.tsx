@@ -4,7 +4,7 @@ import Modal from "../Widgets/Modal";
 import SettingsModalContent from "../ModalContents/SettingsModalContent";
 import BudgetModalContent from "../ModalContents/BudgetModalContent";
 import BalanceModalContent from "../ModalContents/BalanceModalContent";
-import { Account, Balance, Currency } from "../../lib/types";
+import { Account, Balance, Currency, Transacion } from "../../lib/types";
 
 const expenses = 3800;
 
@@ -17,6 +17,10 @@ export default function Head() {
   const [localMainCurrency] = useLocalStorage<string>("localMainCurrency", "");
   const [localAccounts] = useLocalStorage<Account[]>("localAccounts", []);
   const [localCurrency] = useLocalStorage<Currency[]>("localCurrency", []);
+  const [localIncomeTransacions] = useLocalStorage<Transacion[]>(
+    "localIncomeTransacions",
+    []
+  );
 
   const budgetUsagePercentage = localBudget
     ? Math.round((expenses / localBudget) * 100)
@@ -65,6 +69,39 @@ export default function Head() {
   const mainCurrencyBalance =
     balance.find((b) => b.currency === localMainCurrency)?.total || "0.00";
 
+  const calculateSumsInCurrencies = () => {
+    // Рассчитать суммы для каждой валюты
+    const sums = localCurrency.map((targetCurrency) => {
+      const total = localIncomeTransacions.reduce((sum, transaction) => {
+        // Найти курс исходной валюты
+        const sourceCurrency = localCurrency.find(
+          (cur) => cur.title === transaction.currency
+        );
+
+        if (!sourceCurrency) return sum; // Пропустить, если курс не найден
+
+        // Перевести в целевую валюту
+        const amountInTargetCurrency =
+          (Number(transaction.amount) / sourceCurrency.exchangeRate) *
+          targetCurrency.exchangeRate;
+
+        return sum + amountInTargetCurrency;
+      }, 0);
+
+      return {
+        currency: targetCurrency.title,
+        total: total.toFixed(2), // Округлить до двух знаков
+      };
+    });
+
+    return sums;
+  };
+
+  const incom = calculateSumsInCurrencies();
+  const incomTotalInCurr = incom.filter(
+    (res) => res.currency === localMainCurrency
+  )[0].total;
+
   return (
     <>
       {settingsModal && (
@@ -100,7 +137,8 @@ export default function Head() {
           <div onClick={() => setBalanceModal(true)} className="cursor-pointer">
             <p className="text-neutral-500">Баланс</p>
             <p className="text-xl font-aptosBold leading-none">
-              {mainCurrencyBalance} {localMainCurrency}
+              {Number(mainCurrencyBalance) + Number(incomTotalInCurr)}{" "}
+              {localMainCurrency}
             </p>
           </div>
         </div>
