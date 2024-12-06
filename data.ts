@@ -1,9 +1,4 @@
-export const COLORS = [
-  "bg-[#EA4335]",
-  "bg-[#FFB705]",
-  "bg-[#34A853]",
-  "bg-[#4285F4]",
-];
+export const COLORS = ["#EA4335", "#FFB705", "#34A853", "#4285F4"];
 
 export const CURRENCY = [
   { id: "1", title: "грн", exchangeRate: 1 },

@@ -1,16 +1,20 @@
 import { useState } from "react";
 import { CURRENCY } from "../../../data";
 import { useLocalStorage } from "usehooks-ts";
+import { Currency } from "../../lib/types";
 
-type SettingsModalContentProps = {};
-type CurrencyProps = { id: string; title: string; exchangeRate: number };
+type SettingsModalContentProps = {
+  setModal: React.Dispatch<React.SetStateAction<boolean>>;
+};
 
-export default function SettingsModalContent({}: SettingsModalContentProps) {
+export default function SettingsModalContent({
+  setModal,
+}: SettingsModalContentProps) {
   const [localMainCurrency, setLocalMainCurrency] = useLocalStorage(
     "localMainCurrency",
     ""
   );
-  const [localCurrency, setLocalCurrency] = useLocalStorage<CurrencyProps[]>(
+  const [localCurrency, setLocalCurrency] = useLocalStorage<Currency[]>(
     "localCurrency",
     []
   );
@@ -59,10 +63,7 @@ export default function SettingsModalContent({}: SettingsModalContentProps) {
             {localCurrency
               .filter((currency) => currency.title !== mainCurrency)
               .map(({ id, title, exchangeRate }) => (
-                <div
-                  key={id}
-                  className="flex items-center gap-4 border-r last:border-none"
-                >
+                <div key={id} className="flex items-center gap-4">
                   <p>{title}</p>
                   <input
                     type="number"
@@ -75,6 +76,13 @@ export default function SettingsModalContent({}: SettingsModalContentProps) {
                 </div>
               ))}
           </div>
+          <button
+            className="mt-4 ml-auto block bg-black/5 aspect-square px-4 h-10 rounded-lg leading-none transition-colors hover:bg-black/10 disabled:hidden"
+            onClick={() => setModal(false)}
+            disabled={!mainCurrency}
+          >
+            Сохранить
+          </button>
         </>
       )}
     </>

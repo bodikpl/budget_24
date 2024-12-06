@@ -1,4 +1,4 @@
-function TransactionContent({
+function TransactionModalContent({
   category,
   amount,
   accountTitle,
@@ -24,4 +24,4 @@ function TransactionContent({
     </div>
   );
 }
-export default TransactionContent;
+export default TransactionModalContent;

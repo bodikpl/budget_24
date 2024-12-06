@@ -11,7 +11,8 @@ function AccountCard({
 }) {
   return (
     <div
-      className={`${color} rounded-lg p-2 w-full flex justify-between items-start text-xs text-white font-aptosSemiBold`}
+      style={{ backgroundColor: color }}
+      className={`rounded-lg p-2 w-full flex justify-between items-start text-xs text-white font-aptosSemiBold`}
     >
       <div>
         <p>

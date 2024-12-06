@@ -1,14 +1,7 @@
 import { useLocalStorage } from "usehooks-ts";
 import { COLORS, CURRENCY } from "../../../data";
 import { useState } from "react";
-
-export type Account = {
-  id: string;
-  title: string;
-  currency: string;
-  color: string;
-  balance: string | number;
-};
+import { Account } from "../../lib/types";
 
 type AddingAccountModalContentProps = {
   setModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -97,9 +90,10 @@ export default function AddingAccountModalContent({
             {COLORS.map((el) => (
               <button
                 key={el}
+                style={{ backgroundColor: el }}
                 className={`${
                   selectedColor === el ? "ring-2 ring-neutral-500" : ""
-                } w-10 h-10 ${el} aspect-square px-4 rounded-full`}
+                } w-10 h-10 aspect-square px-4 rounded-full`}
                 onClick={() => setSelectedColor(el)}
               ></button>
             ))}
