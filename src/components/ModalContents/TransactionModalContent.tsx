@@ -1,7 +1,7 @@
 import { getFormattedDate } from "../../lib/fn";
-import { Transacion } from "../../lib/types";
+import { Transaction } from "../../lib/types";
 
-type TransactionModalContentProps = { transaction: Transacion };
+type TransactionModalContentProps = { transaction: Transaction };
 
 export default function TransactionModalContent({
   transaction,

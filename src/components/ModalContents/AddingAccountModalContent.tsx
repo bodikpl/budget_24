@@ -2,6 +2,7 @@ import { useLocalStorage } from "usehooks-ts";
 import { COLORS, CURRENCY } from "../../lib/data";
 import { useState } from "react";
 import { Account } from "../../lib/types";
+import { v4 as uuidv4 } from "uuid";
 
 type AddingAccountModalContentProps = {
   setModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -11,23 +12,24 @@ export default function AddingAccountModalContent({
   setModal,
 }: AddingAccountModalContentProps) {
   const [localMainCurrency] = useLocalStorage("localMainCurrency", "");
-  const [selectedCurrency, setSelectedCurrency] = useState<string>("");
-  const [selectedColor, setSelectedColor] = useState<string>(COLORS[0]);
-  const [title, setTitle] = useState<string>("");
-  const [initialBalance, setInitialBalance] = useState<string | number>(0);
   const [localAccounts, setLocalAccounts] = useLocalStorage<Account[]>(
     "localAccounts",
     []
   );
 
+  const [title, setTitle] = useState<string>("");
+  const [selectedCurrency, setSelectedCurrency] = useState<string>("");
+  const [initialBalance, setInitialBalance] = useState("");
+  const [selectedColor, setSelectedColor] = useState<string>(COLORS[0]);
+
   // Функция для сохранения или обновления аккаунта
   const handleSaveAccount = () => {
     const newAccount: Account = {
-      id: title.toLowerCase().replace(/\s+/g, "-"), // Простой способ генерации уникального ID на основе названия
+      id: uuidv4(),
       title,
       currency: selectedCurrency,
       color: selectedColor,
-      balance: initialBalance,
+      initialBalance: Number(initialBalance),
     };
 
     // Проверяем, есть ли уже аккаунт с таким названием
@@ -81,7 +83,7 @@ export default function AddingAccountModalContent({
             type="number"
             placeholder="Укажите, если нужно"
             className="w-full"
-            value={initialBalance === 0 ? "" : initialBalance}
+            value={initialBalance}
             onChange={(e) => setInitialBalance(e.target.value)}
           />
 
@@ -99,7 +101,6 @@ export default function AddingAccountModalContent({
             ))}
           </div>
 
-          {/* Кнопка для сохранения аккаунта */}
           <button
             className="mt-4 ml-auto block bg-black/5 aspect-square px-4 h-10 rounded-lg leading-none transition-colors hover:bg-black/10 disabled:hidden"
             //   onClick={() => setModal(false)}

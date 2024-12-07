@@ -3,12 +3,12 @@ import Modal from "../Widgets/Modal";
 import TotalCard from "../Widgets/TotalCard";
 import IncomeModalContent from "../ModalContents/IncomeModalContent";
 import ExpenseModalContent from "../ModalContents/ExpenseModalContent";
-import { Currency, Transacion } from "../../lib/types";
+import { Currency, Transaction } from "../../lib/types";
 import { useLocalStorage } from "usehooks-ts";
 
-type TotalsProps = { incomeTransacions: Transacion[] };
+type TotalsProps = { incomeTransactions: Transaction[] };
 
-export default function Totals({ incomeTransacions }: TotalsProps) {
+export default function Totals({ incomeTransactions }: TotalsProps) {
   const [incomeModal, setIncomeModal] = useState(false);
   const [expensesModal, setExpensesModal] = useState(false);
 
@@ -18,7 +18,7 @@ export default function Totals({ incomeTransacions }: TotalsProps) {
   const calculateSumsInCurrencies = () => {
     // Рассчитать суммы для каждой валюты
     const sums = localCurrency.map((targetCurrency) => {
-      const total = incomeTransacions.reduce((sum, transaction) => {
+      const total = incomeTransactions.reduce((sum, transaction) => {
         // Найти курс исходной валюты
         const sourceCurrency = localCurrency.find(
           (cur) => cur.title === transaction.currency
@@ -36,7 +36,7 @@ export default function Totals({ incomeTransacions }: TotalsProps) {
 
       return {
         currency: targetCurrency.title,
-        total: total.toFixed(2), // Округлить до двух знаков
+        total: total,
       };
     });
 

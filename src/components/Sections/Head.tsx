@@ -4,7 +4,7 @@ import Modal from "../Widgets/Modal";
 import SettingsModalContent from "../ModalContents/SettingsModalContent";
 import BudgetModalContent from "../ModalContents/BudgetModalContent";
 import BalanceModalContent from "../ModalContents/BalanceModalContent";
-import { Account, Balance, Currency, Transacion } from "../../lib/types";
+import { Account, Balance, Currency, Transaction } from "../../lib/types";
 
 const expenses = 3800;
 
@@ -17,8 +17,8 @@ export default function Head() {
   const [localMainCurrency] = useLocalStorage<string>("localMainCurrency", "");
   const [localAccounts] = useLocalStorage<Account[]>("localAccounts", []);
   const [localCurrency] = useLocalStorage<Currency[]>("localCurrency", []);
-  const [localIncomeTransacions] = useLocalStorage<Transacion[]>(
-    "localIncomeTransacions",
+  const [localIncomeTransactions] = useLocalStorage<Transaction[]>(
+    "localIncomeTransactions",
     []
   );
 
@@ -35,7 +35,8 @@ export default function Head() {
       ? "text-black"
       : "text-neutral-500";
 
-  const balance: Balance[] = useMemo(() => {
+  // Получаем сумму стартовых балансов со всех карт
+  const accountsBalances: Balance[] = useMemo(() => {
     if (!localCurrency.length || !localAccounts.length) return [];
 
     return localCurrency.map((targetCurrency) => {
@@ -43,16 +44,10 @@ export default function Head() {
         const sourceCurrency = localCurrency.find(
           (cur) => cur.title === account.currency
         );
-        const accountBalance =
-          typeof account.balance === "string"
-            ? parseFloat(account.balance)
-            : typeof account.balance === "number"
-            ? account.balance
-            : 0;
 
         if (sourceCurrency) {
           const convertedAmount =
-            (accountBalance / sourceCurrency.exchangeRate) *
+            (account.initialBalance / sourceCurrency.exchangeRate) *
             targetCurrency.exchangeRate;
           return sum + convertedAmount;
         }
@@ -61,46 +56,84 @@ export default function Head() {
 
       return {
         currency: targetCurrency.title,
-        total: total.toFixed(2),
+        total: total,
       };
     });
   }, [localAccounts, localCurrency]);
 
-  const mainCurrencyBalance =
-    balance.find((b) => b.currency === localMainCurrency)?.total || "0.00";
+  // Получаем сумму доходов со всех карт
+  const incomesBalances: Balance[] = useMemo(() => {
+    if (!localCurrency.length || !localAccounts.length) return [];
 
-  const calculateSumsInCurrencies = () => {
-    // Рассчитать суммы для каждой валюты
-    const sums = localCurrency.map((targetCurrency) => {
-      const total = localIncomeTransacions.reduce((sum, transaction) => {
-        // Найти курс исходной валюты
+    return localCurrency.map((targetCurrency) => {
+      const total = localIncomeTransactions.reduce((sum, transaction) => {
         const sourceCurrency = localCurrency.find(
           (cur) => cur.title === transaction.currency
         );
 
-        if (!sourceCurrency) return sum; // Пропустить, если курс не найден
-
-        // Перевести в целевую валюту
-        const amountInTargetCurrency =
-          (Number(transaction.amount) / sourceCurrency.exchangeRate) *
-          targetCurrency.exchangeRate;
-
-        return sum + amountInTargetCurrency;
+        if (sourceCurrency) {
+          const convertedAmount =
+            (transaction.amount / sourceCurrency.exchangeRate) *
+            targetCurrency.exchangeRate;
+          return sum + convertedAmount;
+        }
+        return sum;
       }, 0);
 
       return {
         currency: targetCurrency.title,
-        total: total.toFixed(2), // Округлить до двух знаков
+        total: total,
       };
     });
+  }, [localAccounts, localCurrency]);
 
-    return sums;
-  };
+  console.log(incomesBalances);
 
-  const incom = calculateSumsInCurrencies();
-  const incomTotalInCurr = incom.filter(
-    (res) => res.currency === localMainCurrency
-  )[0].total;
+  const accountsBalanceInMainCurrency =
+    accountsBalances.find((b) => b.currency === localMainCurrency)?.total || 0;
+  const incomesBalanceInMainCurrency =
+    incomesBalances.find((b) => b.currency === localMainCurrency)?.total || 0;
+
+  const balance = accountsBalanceInMainCurrency + incomesBalanceInMainCurrency;
+
+  // const calculateIncomeTransactionsSumsInCurrencies = () => {
+  //   if (localCurrency && localIncomeTransactions) {
+  //     // Рассчитать суммы для каждой валюты
+  //     const sums = localCurrency.map((targetCurrency) => {
+  //       const total = localIncomeTransactions.reduce((sum, transaction) => {
+  //         // Найти курс исходной валюты
+  //         const sourceCurrency = localCurrency.find(
+  //           (cur) => cur.title === transaction.currency
+  //         );
+
+  //         if (!sourceCurrency) return sum; // Пропустить, если курс не найден
+
+  //         // Перевести в целевую валюту
+  //         const amountInTargetCurrency =
+  //           (Number(transaction.amount) / sourceCurrency.exchangeRate) *
+  //           targetCurrency.exchangeRate;
+
+  //         return sum + amountInTargetCurrency;
+  //       }, 0);
+
+  //       return {
+  //         currency: targetCurrency.title,
+  //         total: total,
+  //       };
+  //     });
+  //     return sums;
+  //   } else {
+  //     return [{ currency: "", total: 0 }];
+  //   }
+  // };
+
+  // const incomeTransactionsSums = calculateIncomeTransactionsSumsInCurrencies();
+
+  // const totalBalance =
+  //   localAccountsSumsInMainCurrency +
+  //   incomeTransactionsSums.filter(
+  //     (res) => res.currency === localMainCurrency
+  //   )[0].total;
 
   return (
     <>
@@ -122,7 +155,7 @@ export default function Head() {
         <Modal
           title="Баланс"
           setModal={setBalanceModal}
-          node={<BalanceModalContent balance={balance} />}
+          node={<BalanceModalContent balance={accountsBalances} />}
         />
       )}
 
@@ -137,8 +170,8 @@ export default function Head() {
           <div onClick={() => setBalanceModal(true)} className="cursor-pointer">
             <p className="text-neutral-500">Баланс</p>
             <p className="text-xl font-aptosBold leading-none">
-              {Number(mainCurrencyBalance) + Number(incomTotalInCurr)}{" "}
-              {localMainCurrency}
+              {localAccounts.length > 0 ? balance.toFixed(1) : 0}{" "}
+              {localMainCurrency ? localMainCurrency : ""}
             </p>
           </div>
         </div>

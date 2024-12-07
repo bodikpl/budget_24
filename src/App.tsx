@@ -3,16 +3,16 @@ import Accounts from "./components/Sections/Accounts.tsx";
 import Head from "./components/Sections/Head.tsx";
 import Totals from "./components/Sections/Totals.tsx";
 import Transactions from "./components/Sections/Transactions.tsx";
-import { Transacion } from "./lib/types.ts";
+import { Transaction } from "./lib/types.ts";
 
 function App() {
   const [localMainCurrency] = useLocalStorage("localMainCurrency", "");
-  const [localIncomeTransacions] = useLocalStorage<Transacion[]>(
-    "localIncomeTransacions",
+  const [localIncomeTransactions] = useLocalStorage<Transaction[]>(
+    "localIncomeTransactions",
     []
   );
 
-  const transactions = [...localIncomeTransacions];
+  const transactions = [...localIncomeTransactions];
   return (
     <>
       <main className="max-w-lg md:max-w-7xl mx-auto p-4 md:px-10 flex flex-col md:flex-row gap-5 md:gap-10 select-none">
@@ -20,7 +20,7 @@ function App() {
           <Head />
           <Accounts />
           {localMainCurrency && (
-            <Totals incomeTransacions={localIncomeTransacions} />
+            <Totals incomeTransactions={localIncomeTransactions} />
           )}
         </div>
 

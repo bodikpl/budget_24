@@ -2,7 +2,7 @@ export type Currency = { id: string; title: string; exchangeRate: number };
 
 export type Balance = {
   currency: string;
-  total: string;
+  total: number;
 };
 
 export type Account = {
@@ -10,15 +10,15 @@ export type Account = {
   title: string;
   currency: string;
   color: string;
-  balance: string | number;
+  initialBalance: number;
 };
 
-export type Transacion = {
+export type Transaction = {
   id: string;
   category: string;
   accountTitle: string;
   currency: string;
   description: string;
-  amount: string | number;
+  amount: number;
   date: number;
 };

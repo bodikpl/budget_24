@@ -2,7 +2,7 @@ import { useState } from "react";
 import Modal from "../Widgets/Modal";
 import IncomeAccountSelect from "../Selects/IncomeAccountSelect";
 import IncomeCatygoriesSelect from "../Selects/IncomeCatygoriesSelect";
-import { Account, Transacion } from "../../lib/types";
+import { Account, Transaction } from "../../lib/types";
 import { useLocalStorage } from "usehooks-ts";
 import { v4 as uuidv4 } from "uuid";
 
@@ -21,7 +21,7 @@ export default function IncomeModalContent({
   const [selectedAccount, setSelectedAccount] = useState<null | Account>(null);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [description, setDescription] = useState("");
-  const [amount, setAmount] = useState<string | number>("");
+  const [amount, setAmount] = useState("");
 
   const handleIncomeAccountSelect = (value: Account) => {
     setSelectedAccount(value);
@@ -33,36 +33,39 @@ export default function IncomeModalContent({
     setIncomeCatygoriesSelectModal(false);
   };
 
-  const [localIncomeTransacions, setLocalIncomeTransacions] = useLocalStorage<
-    Transacion[]
-  >("localIncomeTransacions", []);
+  const [localIncomeTransactions, setLocalIncomeTransactions] = useLocalStorage<
+    Transaction[]
+  >("localIncomeTransactions", []);
 
   // Функция для сохранения или обновления транзакции
   const handleSaveTransaction = () => {
     if (selectedAccount && selectedCategory) {
-      const newTransaction: Transacion = {
+      const newTransaction: Transaction = {
         id: uuidv4(),
         category: selectedCategory,
         accountTitle: selectedAccount.title,
         currency: selectedAccount.currency,
         description,
-        amount,
+        amount: Number(amount),
         date: Date.now(),
       };
 
-      const existingTransactionIndex = localIncomeTransacions.findIndex(
+      const existingTransactionIndex = localIncomeTransactions.findIndex(
         (transaction) => transaction.id === newTransaction.id
       );
 
       if (existingTransactionIndex > -1) {
         // Если аккаунт существует, обновляем его
-        const updatedTransactions = [...localIncomeTransacions];
+        const updatedTransactions = [...localIncomeTransactions];
         updatedTransactions[existingTransactionIndex] = newTransaction;
-        setLocalIncomeTransacions(updatedTransactions);
+        setLocalIncomeTransactions(updatedTransactions);
         setModal(false);
       } else {
         // Если аккаунта нет, добавляем новый
-        setLocalIncomeTransacions([...localIncomeTransacions, newTransaction]);
+        setLocalIncomeTransactions([
+          ...localIncomeTransactions,
+          newTransaction,
+        ]);
         setModal(false);
       }
     }
@@ -121,7 +124,7 @@ export default function IncomeModalContent({
         autoFocus
         placeholder="Введите сумму"
         className="btn_2"
-        onChange={(e) => setAmount(parseFloat(e.target.value))}
+        onChange={(e) => setAmount(e.target.value)}
       />
 
       <button

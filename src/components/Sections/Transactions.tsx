@@ -1,9 +1,9 @@
 import { useState } from "react";
 import Modal from "../Widgets/Modal";
 import TransactionCard from "../Widgets/TransactionCard";
-import { Transacion } from "../../lib/types";
+import { Transaction } from "../../lib/types";
 
-type TransactionsProps = { transactions: Transacion[] };
+type TransactionsProps = { transactions: Transaction[] };
 
 export default function Transactions({ transactions }: TransactionsProps) {
   const [modal, setModal] = useState(false);

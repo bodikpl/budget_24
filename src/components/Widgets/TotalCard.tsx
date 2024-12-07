@@ -8,10 +8,11 @@ function TotalCard({
 }: {
   title: string;
   color: string;
-  amount: number | string;
+  amount: number;
   setModal: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const [localMainCurrency] = useLocalStorage("localMainCurrency", "");
+
   return (
     <div
       style={{ backgroundColor: color }}
@@ -20,7 +21,7 @@ function TotalCard({
       <div>
         <p className="font-aptosSemiBold text-sm">{title}</p>
         <p className="mt-4 text-xl font-aptosBold">
-          {amount}{" "}
+          {amount.toFixed(1)}{" "}
           <span className="font-aptosSemiBold text-lg">
             {localMainCurrency}
           </span>

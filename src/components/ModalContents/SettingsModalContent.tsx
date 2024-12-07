@@ -29,10 +29,10 @@ export default function SettingsModalContent({
     setLocalCurrency(CURRENCY);
   };
 
-  const handleExchangeRateChange = (id: string, newRate: number) => {
+  const handleExchangeRateChange = (id: string, newRate: string | number) => {
     setLocalCurrency((prev) =>
       prev.map((item) =>
-        item.id === id ? { ...item, exchangeRate: newRate } : item
+        item.id === id ? { ...item, exchangeRate: Number(newRate) } : item
       )
     );
   };
@@ -97,7 +97,7 @@ export default function SettingsModalContent({
                     className="w-full"
                     value={exchangeRate || ""}
                     onChange={(e) =>
-                      handleExchangeRateChange(id, parseFloat(e.target.value))
+                      handleExchangeRateChange(id, e.target.value)
                     }
                   />
                 </div>

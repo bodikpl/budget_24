@@ -1,10 +1,10 @@
 import { useState } from "react";
 import Modal from "./Modal";
 import TransactionModalContent from "../ModalContents/TransactionModalContent";
-import { Transacion } from "../../lib/types";
+import { Transaction } from "../../lib/types";
 import { getFormattedDate } from "../../lib/fn";
 
-type TransactionCardProps = { transaction: Transacion };
+type TransactionCardProps = { transaction: Transaction };
 
 export default function TransactionCard({ transaction }: TransactionCardProps) {
   const [transactionModal, setTransactionModal] = useState(false);
