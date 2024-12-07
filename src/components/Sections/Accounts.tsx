@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Modal from "../Widgets/Modal";
-import AddingAccountModalContent from "../ModalContents/AddingAccountModalContent";
+import AccountModalContent from "../ModalContents/AccountModalContent";
 import { useLocalStorage } from "usehooks-ts";
 import { Account } from "../../lib/types";
 import AccountCard from "../Widgets/AccountCard";
@@ -14,7 +14,7 @@ function Accounts() {
         <Modal
           title="Добавить счет"
           setModal={setModal}
-          node={<AddingAccountModalContent setModal={setModal} />}
+          node={<AccountModalContent setModal={setModal} />}
         />
       )}
 

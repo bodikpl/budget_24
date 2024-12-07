@@ -5,8 +5,7 @@ import SettingsModalContent from "../ModalContents/SettingsModalContent";
 import BudgetModalContent from "../ModalContents/BudgetModalContent";
 import BalanceModalContent from "../ModalContents/BalanceModalContent";
 import { Account, Balance, Currency, Transaction } from "../../lib/types";
-
-const expenses = 3800;
+import { calculateSumsInCurrencies } from "../../lib/fn";
 
 export default function Head() {
   const [settingsModal, setSettingsModal] = useState(false);
@@ -21,19 +20,6 @@ export default function Head() {
     "localTransactions",
     []
   );
-
-  const budgetUsagePercentage = localBudget
-    ? Math.round((expenses / localBudget) * 100)
-    : 0;
-
-  const percentageTextColor =
-    budgetUsagePercentage > 90
-      ? "text-red-500"
-      : budgetUsagePercentage > 80
-      ? "text-orange-500"
-      : budgetUsagePercentage > 60
-      ? "text-black"
-      : "text-neutral-500";
 
   // Получаем сумму стартовых балансов со всех карт
   const accountsBalances: Balance[] = useMemo(() => {
@@ -129,6 +115,31 @@ export default function Head() {
     incomesBalanceInMainCurrency +
     expensesBalanceInMainCurrency;
 
+  const expenses = calculateSumsInCurrencies(
+    localTransactions.filter(
+      (transaction) => transaction.transactionType === "expense"
+    ),
+    localCurrency
+  );
+
+  const budgetUsagePercentage = localBudget
+    ? Math.round(
+        (expenses.filter((expense) => expense.currency === localMainCurrency)[0]
+          .total /
+          localBudget) *
+          100
+      )
+    : 0;
+
+  const percentageTextColor =
+    budgetUsagePercentage > 90
+      ? "text-red-500"
+      : budgetUsagePercentage > 80
+      ? "text-orange-500"
+      : budgetUsagePercentage > 60
+      ? "text-black"
+      : "text-neutral-500";
+
   return (
     <>
       {settingsModal && (
@@ -149,7 +160,13 @@ export default function Head() {
         <Modal
           title="Баланс"
           setModal={setBalanceModal}
-          node={<BalanceModalContent balance={accountsBalances} />}
+          node={
+            <BalanceModalContent
+              mainCurrency={localMainCurrency}
+              balance={balance}
+              localCurrency={localCurrency}
+            />
+          }
         />
       )}
 
@@ -179,7 +196,10 @@ export default function Head() {
           </p>
           {localBudget && (
             <p className="text-xl font-aptosBold leading-none">
-              {expenses} / {localBudget} {localMainCurrency}
+              {expenses.filter(
+                (expense) => expense.currency === localMainCurrency
+              )[0].total * -1}{" "}
+              / {localBudget} {localMainCurrency}
             </p>
           )}
         </div>

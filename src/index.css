@@ -40,9 +40,9 @@ h3 {
 }
 
 .btn_1 {
-  @apply bg-neutral-100 aspect-square w-10 h-10 rounded-full text-3xl leading-none transition-all hover:bg-black/10 active:scale-90;
+  @apply bg-black/5 aspect-square w-10 h-10 rounded-full text-3xl leading-none transition-all hover:bg-black/10 active:scale-90;
 }
 
 .btn_2 {
-  @apply w-full bg-neutral-100 aspect-square px-4 h-10 rounded-lg leading-none transition-all hover:bg-black/10;
+  @apply w-full bg-black/5 aspect-square px-4 h-10 rounded-lg leading-none transition-all hover:bg-black/10;
 }

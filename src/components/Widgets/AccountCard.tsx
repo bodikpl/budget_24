@@ -2,8 +2,9 @@ import { useState } from "react";
 
 import { Account, Transaction } from "../../lib/types";
 import Modal from "./Modal";
-import AccountModalContent from "../ModalContents/AccountModalContent";
+
 import { useLocalStorage } from "usehooks-ts";
+import AccountModalContent from "../ModalContents/AccountModalContent";
 
 type AccountCardProps = { account: Account };
 
@@ -22,14 +23,14 @@ export default function AccountCard({ account }: AccountCardProps) {
 
   const getTotalAmountByAccountTitle = (
     transactions: Transaction[],
-    accountTitle: string
+    id: string
   ): number => {
     return transactions
-      .filter((transaction) => transaction.accountTitle === accountTitle)
+      .filter((transaction) => transaction.accountId === id)
       .reduce((sum, transaction) => sum + transaction.amount, 0);
   };
 
-  const total = getTotalAmountByAccountTitle(transactions, account.title);
+  const total = getTotalAmountByAccountTitle(transactions, account.id);
 
   return (
     <>
@@ -37,7 +38,13 @@ export default function AccountCard({ account }: AccountCardProps) {
         <Modal
           title="Счет"
           setModal={setModal}
-          node={<AccountModalContent account={account} setModal={setModal} />}
+          node={
+            <AccountModalContent
+              editMode={true}
+              account={account}
+              setModal={setModal}
+            />
+          }
         />
       )}
 
@@ -50,7 +57,7 @@ export default function AccountCard({ account }: AccountCardProps) {
           <p className="text-xs">
             {account.title}, <span>{account.currency}</span>
           </p>
-          <p className="text-lg font-aptosBold">
+          <p className="text-lg font-aptosSemiBold">
             {account.initialBalance + total}{" "}
             <span className="text-xs">{account.currency}</span>
           </p>

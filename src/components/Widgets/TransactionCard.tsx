@@ -1,8 +1,9 @@
 import { useState } from "react";
 import Modal from "./Modal";
 import TransactionModalContent from "../ModalContents/TransactionModalContent";
-import { Transaction } from "../../lib/types";
+import { Account, Transaction } from "../../lib/types";
 import { getFormattedDate } from "../../lib/fn";
+import { useLocalStorage } from "usehooks-ts";
 
 type TransactionCardProps = { transaction: Transaction };
 
@@ -10,6 +11,11 @@ export default function TransactionCard({ transaction }: TransactionCardProps) {
   const [transactionModal, setTransactionModal] = useState(false);
 
   const formattedDate = getFormattedDate(transaction.date);
+
+  const [localAccounts] = useLocalStorage<Account[]>("localAccounts", []);
+  const transactionAccount = localAccounts.filter(
+    (acc) => acc.id === transaction?.accountId
+  )[0];
 
   return (
     <>
@@ -19,8 +25,10 @@ export default function TransactionCard({ transaction }: TransactionCardProps) {
           setModal={setTransactionModal}
           node={
             <TransactionModalContent
+              transactionType={transaction.transactionType}
               transaction={transaction}
               setModal={setTransactionModal}
+              editMode={true}
             />
           }
         />
@@ -51,7 +59,7 @@ export default function TransactionCard({ transaction }: TransactionCardProps) {
           <div className="flex gap-4 justify-between text-xs text-neutral-500">
             <p>{transaction.description}</p>
             <p className="whitespace-nowrap font-aptosSemiBold">
-              {transaction.accountTitle}, {transaction.currency}
+              {transactionAccount.title}, {transaction.currency}
             </p>
           </div>
         </div>

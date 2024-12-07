@@ -28,12 +28,25 @@ export default function SettingsModalContent({
     setLocalCurrency(CURRENCY);
   };
 
-  const handleExchangeRateChange = (id: string, newRate: string | number) => {
-    setLocalCurrency((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, exchangeRate: Number(newRate) } : item
-      )
-    );
+  const [tempExchangeRates, setTempExchangeRates] = useState<
+    Record<string, string>
+  >({});
+
+  const handleExchangeRateChange = (id: string, newRate: string) => {
+    setTempExchangeRates((prev) => ({
+      ...prev,
+      [id]: newRate, // Сохраняем значение как строку
+    }));
+
+    if (!isNaN(Number(newRate))) {
+      setLocalCurrency((prev) =>
+        prev.map((item) =>
+          item.id === id
+            ? { ...item, exchangeRate: Number(newRate) } // Конвертируем в число только если это возможно
+            : item
+        )
+      );
+    }
   };
 
   const [incomeCategoriesModal, setIncomeCategoriesModal] = useState(false);
@@ -100,7 +113,7 @@ export default function SettingsModalContent({
                   <input
                     type="number"
                     className="w-full py-1 bg-neutral-100 rounded-lg text-center"
-                    value={exchangeRate || ""}
+                    value={tempExchangeRates[id] ?? exchangeRate.toString()} // Показываем временное значение или число
                     onChange={(e) =>
                       handleExchangeRateChange(id, e.target.value)
                     }
@@ -130,7 +143,7 @@ export default function SettingsModalContent({
       <h3 className="mt-4">Данные приложения</h3>
       <div className="mt-1 grid grid-cols-2 gap-4">
         <button
-          className="btn_2"
+          className="btn_2 border border-[#EA4335] text-[#EA4335]"
           onClick={() => {
             localStorage.clear();
             location.reload();
