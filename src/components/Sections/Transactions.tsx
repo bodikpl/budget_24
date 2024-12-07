@@ -17,7 +17,7 @@ export default function Transactions({ transactions }: TransactionsProps) {
           <h3>Транзакции</h3>
         </div>
         {transactions.length > 0 ? (
-          <div className="mt-2 bg-white shadow-lg rounded-lg max-h-[374px] overflow-y-auto">
+          <div className="mt-2 bg-white shadow-lg rounded-lg max-h-[680px] overflow-y-auto">
             {transactions.map((transaction) => (
               <TransactionCard key={transaction.id} transaction={transaction} />
             ))}
