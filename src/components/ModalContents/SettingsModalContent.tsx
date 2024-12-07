@@ -122,6 +122,25 @@ export default function SettingsModalContent({
         </button>
       </div>
 
+      <h3 className="mt-4">Данные приложения</h3>
+      <div className="mt-1 grid grid-cols-2 gap-4">
+        <button
+          className="btn_2"
+          onClick={() => {
+            localStorage.clear();
+            location.reload();
+          }}
+        >
+          Удалить все
+        </button>
+        <button
+          className="btn_2"
+          // onClick={() => setExpensesCategoriesModal(true)}
+        >
+          Синхронизация
+        </button>
+      </div>
+
       {mainCurrency && (
         <button
           className="mt-4 ml-auto block bg-black/5 aspect-square px-4 h-10 rounded-lg leading-none transition-colors hover:bg-black/10 disabled:hidden"
