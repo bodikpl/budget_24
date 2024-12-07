@@ -107,6 +107,10 @@ export default function Head() {
       )
     : 0;
 
+  const formattedExpenses =
+    expenses.filter((expense) => expense.currency === localMainCurrency)[0]
+      .total * -1;
+
   return (
     <>
       {settingsModal && (
@@ -163,10 +167,7 @@ export default function Head() {
           </p>
           {localBudget && (
             <p className="text-xl font-aptosBold leading-none">
-              {expenses.filter(
-                (expense) => expense.currency === localMainCurrency
-              )[0].total * -1}{" "}
-              / {localBudget} {localMainCurrency}
+              {formattedExpenses.toFixed(0)} / {localBudget} {localMainCurrency}
             </p>
           )}
         </div>

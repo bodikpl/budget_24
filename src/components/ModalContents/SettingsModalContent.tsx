@@ -1,9 +1,13 @@
 import { useState } from "react";
-import { CURRENCY } from "../../lib/data";
+import {
+  CURRENCY,
+  EXPENSES_CATEGORIES,
+  INCOME_CATEGORIES,
+} from "../../lib/data";
 import { useLocalStorage } from "usehooks-ts";
 import { Currency } from "../../lib/types";
 import Modal from "../Widgets/Modal";
-import CategoriesModalContent from "./CategoriesModalContent";
+import CategoriesSelect from "../Selects/CategoriesSelect";
 
 type SettingsModalContentProps = {
   setModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -59,9 +63,9 @@ export default function SettingsModalContent({
           title="Категории доходов"
           setModal={setIncomeCategoriesModal}
           node={
-            <CategoriesModalContent
-              categoriesType="income"
-              setModal={setIncomeCategoriesModal}
+            <CategoriesSelect
+              categories={INCOME_CATEGORIES}
+              onClose={setIncomeCategoriesModal}
             />
           }
           subModal={true}
@@ -72,9 +76,9 @@ export default function SettingsModalContent({
           title="Категории расходов"
           setModal={setExpensesCategoriesModal}
           node={
-            <CategoriesModalContent
-              categoriesType="expense"
-              setModal={setExpensesCategoriesModal}
+            <CategoriesSelect
+              categories={EXPENSES_CATEGORIES}
+              onClose={setExpensesCategoriesModal}
             />
           }
           subModal={true}
