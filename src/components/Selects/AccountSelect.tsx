@@ -13,6 +13,7 @@ export default function AccountSelect({ setModal }: AccountSelectProps) {
         {localAccounts.map((account) => (
           <button
             key={account.id}
+            style={{ backgroundColor: account.color, color: "white" }}
             className="btn_2"
             onClick={() => setModal(account)}
           >

@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { useLocalStorage } from "usehooks-ts";
 import Modal from "../Widgets/Modal";
 import SettingsModalContent from "../ModalContents/SettingsModalContent";
@@ -22,86 +22,62 @@ export default function Head() {
   );
 
   // Получаем сумму стартовых балансов со всех карт
-  const accountsBalances: Balance[] = useMemo(() => {
-    if (!localCurrency.length || !localAccounts.length) return [];
+  const accountsBalances: Balance[] = localCurrency.map((targetCurrency) => {
+    const total = localAccounts.reduce((sum, account) => {
+      const sourceCurrency = localCurrency.find(
+        (cur) => cur.title === account.currency
+      );
+      if (!sourceCurrency) return sum;
 
-    return localCurrency.map((targetCurrency) => {
-      const total = localAccounts.reduce((sum, account) => {
-        const sourceCurrency = localCurrency.find(
-          (cur) => cur.title === account.currency
-        );
+      return (
+        sum +
+        (account.initialBalance / sourceCurrency.exchangeRate) *
+          targetCurrency.exchangeRate
+      );
+    }, 0);
 
-        if (sourceCurrency) {
-          const convertedAmount =
-            (account.initialBalance / sourceCurrency.exchangeRate) *
-            targetCurrency.exchangeRate;
-          return sum + convertedAmount;
-        }
-        return sum;
-      }, 0);
-
-      return {
-        currency: targetCurrency.title,
-        total: total,
-      };
-    });
-  }, [localAccounts, localCurrency]);
+    return { currency: targetCurrency.title, total };
+  });
 
   // Получаем сумму доходов со всех карт
-  const incomesBalances: Balance[] = useMemo(() => {
-    if (!localCurrency.length || !localAccounts.length) return [];
+  const incomesBalances: Balance[] = localCurrency.map((targetCurrency) => {
+    const total = localTransactions
+      .filter((transaction) => transaction.transactionType === "income")
+      .reduce((sum, transaction) => {
+        const sourceCurrency = localCurrency.find(
+          (cur) => cur.title === transaction.currency
+        );
+        if (!sourceCurrency) return sum;
 
-    return localCurrency.map((targetCurrency) => {
-      const total = localTransactions
-        .filter((transaction) => transaction.transactionType === "income")
-        .reduce((sum, transaction) => {
-          const sourceCurrency = localCurrency.find(
-            (cur) => cur.title === transaction.currency
-          );
+        return (
+          sum +
+          (transaction.amount / sourceCurrency.exchangeRate) *
+            targetCurrency.exchangeRate
+        );
+      }, 0);
 
-          if (sourceCurrency) {
-            const convertedAmount =
-              (transaction.amount / sourceCurrency.exchangeRate) *
-              targetCurrency.exchangeRate;
-            return sum + convertedAmount;
-          }
-          return sum;
-        }, 0);
-
-      return {
-        currency: targetCurrency.title,
-        total: total,
-      };
-    });
-  }, [localAccounts, localCurrency]);
+    return { currency: targetCurrency.title, total };
+  });
 
   // Получаем сумму расходов со всех карт
-  const expensesBalances: Balance[] = useMemo(() => {
-    if (!localCurrency.length || !localAccounts.length) return [];
+  const expensesBalances: Balance[] = localCurrency.map((targetCurrency) => {
+    const total = localTransactions
+      .filter((transaction) => transaction.transactionType === "expense")
+      .reduce((sum, transaction) => {
+        const sourceCurrency = localCurrency.find(
+          (cur) => cur.title === transaction.currency
+        );
+        if (!sourceCurrency) return sum;
 
-    return localCurrency.map((targetCurrency) => {
-      const total = localTransactions
-        .filter((transaction) => transaction.transactionType === "expense")
-        .reduce((sum, transaction) => {
-          const sourceCurrency = localCurrency.find(
-            (cur) => cur.title === transaction.currency
-          );
+        return (
+          sum +
+          (transaction.amount / sourceCurrency.exchangeRate) *
+            targetCurrency.exchangeRate
+        );
+      }, 0);
 
-          if (sourceCurrency) {
-            const convertedAmount =
-              (transaction.amount / sourceCurrency.exchangeRate) *
-              targetCurrency.exchangeRate;
-            return sum + convertedAmount;
-          }
-          return sum;
-        }, 0);
-
-      return {
-        currency: targetCurrency.title,
-        total: total,
-      };
-    });
-  }, [localAccounts, localCurrency]);
+    return { currency: targetCurrency.title, total };
+  });
 
   const accountsBalanceInMainCurrency =
     accountsBalances.find((b) => b.currency === localMainCurrency)?.total || 0;
@@ -130,15 +106,6 @@ export default function Head() {
           100
       )
     : 0;
-
-  const percentageTextColor =
-    budgetUsagePercentage > 90
-      ? "text-red-500"
-      : budgetUsagePercentage > 80
-      ? "text-orange-500"
-      : budgetUsagePercentage > 60
-      ? "text-black"
-      : "text-neutral-500";
 
   return (
     <>
@@ -179,7 +146,7 @@ export default function Head() {
             BS
           </button>
           <div onClick={() => setBalanceModal(true)} className="cursor-pointer">
-            <p className="text-neutral-500">Баланс</p>
+            <p className="font-aptosSemiBold text-neutral-500">Баланс</p>
             <p className="text-xl font-aptosBold leading-none">
               {localAccounts.length > 0 ? balance.toFixed(1) : 0}{" "}
               {localMainCurrency ? localMainCurrency : ""}
@@ -191,8 +158,8 @@ export default function Head() {
           className="flex flex-col items-end cursor-pointer"
           onClick={() => setBudgetModal(true)}
         >
-          <p className={`font-aptosSemiBold ${percentageTextColor}`}>
-            Бюджет {localBudget ? `${budgetUsagePercentage}%` : ""}
+          <p className={"font-aptosSemiBold text-neutral-500"}>
+            Бюджет {localBudget ? `${budgetUsagePercentage * -1}%` : ""}
           </p>
           {localBudget && (
             <p className="text-xl font-aptosBold leading-none">

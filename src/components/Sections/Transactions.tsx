@@ -7,6 +7,7 @@ type TransactionsProps = { transactions: Transaction[] };
 
 export default function Transactions({ transactions }: TransactionsProps) {
   const [modal, setModal] = useState(false);
+
   return (
     <>
       {modal && <Modal title="Счета" setModal={setModal} />}
@@ -14,10 +15,9 @@ export default function Transactions({ transactions }: TransactionsProps) {
       <section className="w-full">
         <div className="flex justify-between items-center">
           <h3>Транзакции</h3>
-          <button>Показать все</button>
         </div>
         {transactions.length > 0 ? (
-          <div className="mt-2 bg-white shadow-lg rounded-lg">
+          <div className="mt-2 bg-white shadow-lg rounded-lg max-h-[374px] overflow-y-auto">
             {transactions.map((transaction) => (
               <TransactionCard key={transaction.id} transaction={transaction} />
             ))}

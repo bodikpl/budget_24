@@ -37,7 +37,13 @@ export default function TransactionModalContent({
   const [description, setDescription] = useState(
     transaction ? transaction.description : ""
   );
-  const [amount, setAmount] = useState(transaction ? transaction.amount : "");
+  const [amount, setAmount] = useState(
+    transaction
+      ? transaction.transactionType === "income"
+        ? transaction.amount
+        : -1 * transaction.amount
+      : ""
+  );
 
   const handleAccountSelect = (value: Account) => {
     setSelectedAccount(value);
@@ -121,8 +127,17 @@ export default function TransactionModalContent({
         />
       )}
 
-      <p>Счет</p>
-      <button className="btn_2" onClick={() => setAccountSelectModal(true)}>
+      <button
+        style={{
+          backgroundColor: selectedAccount
+            ? localAccounts.filter((acc) => acc.id === selectedAccount.id)[0]
+                .color
+            : "#F2F2F2",
+          color: selectedAccount ? "white" : "black",
+        }}
+        className="btn_2"
+        onClick={() => setAccountSelectModal(true)}
+      >
         {selectedAccount
           ? `${selectedAccount.title}, ${selectedAccount.currency}`
           : "Выберите счет"}
@@ -142,39 +157,40 @@ export default function TransactionModalContent({
         onChange={(e) => setDescription(e.target.value)}
       />
 
-      <p className="mt-2">Сумма</p>
-      <input
-        type="number"
-        value={amount}
-        autoFocus
-        placeholder="Введите сумму"
-        className="btn_2"
-        onChange={(e) => setAmount(e.target.value)}
-      />
-
-      <div className="mt-6 flex gap-4 justify-end">
-        {editMode && (
+      <h3 className="mt-4">Сумма</h3>
+      <div className="flex gap-4 justify-between">
+        <input
+          type="number"
+          value={amount}
+          autoFocus
+          placeholder="Введите сумму"
+          className="btn_2 !w-1/2 text-center text-lg"
+          onChange={(e) => setAmount(e.target.value)}
+        />
+        <div className="flex gap-4 justify-end">
+          {editMode && (
+            <button
+              className="bg-black/5 aspect-square px-4 h-10 rounded-lg leading-none transition-colors hover:bg-black/10 disabled:hidden border border-[#EA4335] text-[#EA4335]"
+              onClick={() => {
+                setModal(false);
+                transaction && handleDeleteTransaction(transaction.id);
+              }}
+              // disabled={!title || !selectedCurrency}
+            >
+              Удалить
+            </button>
+          )}
           <button
-            className="bg-black/5 aspect-square px-4 h-10 rounded-lg leading-none transition-colors hover:bg-black/10 disabled:hidden border border-[#EA4335] text-[#EA4335]"
+            className="bg-black/5 aspect-square px-4 h-10 rounded-lg leading-none transition-colors hover:bg-black/10 disabled:hidden"
             onClick={() => {
               setModal(false);
-              transaction && handleDeleteTransaction(transaction.id);
+              handleSaveTransaction();
             }}
-            // disabled={!title || !selectedCurrency}
+            disabled={!selectedAccount || !selectedCategory || !amount}
           >
-            Удалить
+            {editMode ? "Изменить" : "Сохранить"}
           </button>
-        )}
-        <button
-          className="bg-black/5 aspect-square px-4 h-10 rounded-lg leading-none transition-colors hover:bg-black/10 disabled:hidden"
-          onClick={() => {
-            setModal(false);
-            handleSaveTransaction();
-          }}
-          disabled={!selectedAccount || !selectedCategory || !amount}
-        >
-          {editMode ? "Изменить" : "Сохранить"}
-        </button>
+        </div>
       </div>
     </>
   );

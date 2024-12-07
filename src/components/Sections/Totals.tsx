@@ -31,8 +31,6 @@ export default function Totals({ transactions }: TotalsProps) {
     localCurrency
   );
 
-  console.log(expensesTotals);
-
   return (
     <>
       {incomeModal && (
