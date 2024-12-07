@@ -27,7 +27,8 @@ export default function AccountModalContent({
           {account.title}, <span>{account.currency}</span>
         </p>
         <p className="text-base font-aptosBold">
-          {account.balance} <span className="text-xs">{account.currency}</span>
+          Начальная сумма {account.initialBalance}{" "}
+          <span className="text-xs">{account.currency}</span>
         </p>
       </div>
 

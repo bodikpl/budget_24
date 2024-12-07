@@ -1,10 +1,11 @@
 import { useState } from "react";
-import Modal from "../Widgets/Modal";
-import IncomeAccountSelect from "../Selects/IncomeAccountSelect";
-import IncomeCatygoriesSelect from "../Selects/IncomeCatygoriesSelect";
-import { Account, Transaction } from "../../lib/types";
-import { useLocalStorage } from "usehooks-ts";
 import { v4 as uuidv4 } from "uuid";
+import { useLocalStorage } from "usehooks-ts";
+import { Account, Transaction } from "../../lib/types";
+import Modal from "../Widgets/Modal";
+import AccountSelect from "../Selects/AccountSelect";
+import { INCOME_CATEGORIES } from "../../lib/data";
+import CategoriesSelect from "../Selects/CategoriesSelect";
 
 type IncomeModalContentProps = {
   setModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -13,9 +14,8 @@ type IncomeModalContentProps = {
 export default function IncomeModalContent({
   setModal,
 }: IncomeModalContentProps) {
-  const [incomeAccountSelectModal, setIncomeAccountSelectModal] =
-    useState(false);
-  const [incomeCatygoriesSelectModal, setIncomeCatygoriesSelectModal] =
+  const [accountSelectModal, setAccountSelectModal] = useState(false);
+  const [incomeCategoriesSelectModal, setIncomeCategoriesSelectModal] =
     useState(false);
 
   const [selectedAccount, setSelectedAccount] = useState<null | Account>(null);
@@ -25,12 +25,12 @@ export default function IncomeModalContent({
 
   const handleIncomeAccountSelect = (value: Account) => {
     setSelectedAccount(value);
-    setIncomeAccountSelectModal(false);
+    setAccountSelectModal(false);
   };
 
-  const handleIncomeCatygoriesSelect = (value: string) => {
+  const handleIncomeCategoriesSelect = (value: string) => {
     setSelectedCategory(value);
-    setIncomeCatygoriesSelectModal(false);
+    setIncomeCategoriesSelectModal(false);
   };
 
   const [localIncomeTransactions, setLocalIncomeTransactions] = useLocalStorage<
@@ -55,13 +55,13 @@ export default function IncomeModalContent({
       );
 
       if (existingTransactionIndex > -1) {
-        // Если аккаунт существует, обновляем его
+        // Если транзакция существует, обновляем ее
         const updatedTransactions = [...localIncomeTransactions];
         updatedTransactions[existingTransactionIndex] = newTransaction;
         setLocalIncomeTransactions(updatedTransactions);
         setModal(false);
       } else {
-        // Если аккаунта нет, добавляем новый
+        // Если транзакциии нет, добавляем новую
         setLocalIncomeTransactions([
           ...localIncomeTransactions,
           newTransaction,
@@ -73,28 +73,28 @@ export default function IncomeModalContent({
 
   return (
     <>
-      {incomeAccountSelectModal && (
+      {accountSelectModal && (
         <Modal
           title="Счета"
-          setModal={setIncomeAccountSelectModal}
-          node={<IncomeAccountSelect setModal={handleIncomeAccountSelect} />}
+          setModal={setAccountSelectModal}
+          node={<AccountSelect setModal={handleIncomeAccountSelect} />}
         />
       )}
-      {incomeCatygoriesSelectModal && (
+      {incomeCategoriesSelectModal && (
         <Modal
           title="Категории доходов"
-          setModal={setIncomeCatygoriesSelectModal}
+          setModal={setIncomeCategoriesSelectModal}
           node={
-            <IncomeCatygoriesSelect setModal={handleIncomeCatygoriesSelect} />
+            <CategoriesSelect
+              categories={INCOME_CATEGORIES}
+              setModal={handleIncomeCategoriesSelect}
+            />
           }
         />
       )}
 
       <p>Счет</p>
-      <button
-        className="btn_2"
-        onClick={() => setIncomeAccountSelectModal(true)}
-      >
+      <button className="btn_2" onClick={() => setAccountSelectModal(true)}>
         {selectedAccount
           ? `${selectedAccount.title}, ${selectedAccount.currency}`
           : "Выберите счет"}
@@ -103,7 +103,7 @@ export default function IncomeModalContent({
       <p className="mt-2">Категория</p>
       <button
         className="btn_2"
-        onClick={() => setIncomeCatygoriesSelectModal(true)}
+        onClick={() => setIncomeCategoriesSelectModal(true)}
       >
         {selectedCategory ? selectedCategory : "Выберите категорию"}
       </button>

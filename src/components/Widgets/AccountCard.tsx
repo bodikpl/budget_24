@@ -13,6 +13,15 @@ export default function AccountCard({ account }: AccountCardProps) {
     "localIncomeTransactions",
     []
   );
+  const [localExpensesTransactions] = useLocalStorage<Transaction[]>(
+    "localExpensesTransactions",
+    []
+  );
+
+  const transactions = [
+    ...localIncomeTransactions,
+    ...localExpensesTransactions,
+  ];
 
   const getTotalAmountByAccountTitle = (
     transactions: Transaction[],
@@ -23,10 +32,7 @@ export default function AccountCard({ account }: AccountCardProps) {
       .reduce((sum, transaction) => sum + transaction.amount, 0);
   };
 
-  const total = getTotalAmountByAccountTitle(
-    localIncomeTransactions,
-    account.title
-  );
+  const total = getTotalAmountByAccountTitle(transactions, account.title);
 
   return (
     <>

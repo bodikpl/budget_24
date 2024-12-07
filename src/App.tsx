@@ -11,8 +11,15 @@ function App() {
     "localIncomeTransactions",
     []
   );
+  const [localExpensesTransactions] = useLocalStorage<Transaction[]>(
+    "localExpensesTransactions",
+    []
+  );
 
-  const transactions = [...localIncomeTransactions];
+  const transactions = [
+    ...localIncomeTransactions,
+    ...localExpensesTransactions,
+  ];
   return (
     <>
       <main className="max-w-lg md:max-w-7xl mx-auto p-4 md:px-10 flex flex-col md:flex-row gap-5 md:gap-10 select-none">
@@ -20,7 +27,10 @@ function App() {
           <Head />
           <Accounts />
           {localMainCurrency && (
-            <Totals incomeTransactions={localIncomeTransactions} />
+            <Totals
+              incomeTransactions={localIncomeTransactions}
+              expensesTransactions={localExpensesTransactions}
+            />
           )}
         </div>
 

@@ -21,6 +21,10 @@ export default function Head() {
     "localIncomeTransactions",
     []
   );
+  const [localExpensesTransactions] = useLocalStorage<Transaction[]>(
+    "localExpensesTransactions",
+    []
+  );
 
   const budgetUsagePercentage = localBudget
     ? Math.round((expenses / localBudget) * 100)
@@ -87,53 +91,43 @@ export default function Head() {
     });
   }, [localAccounts, localCurrency]);
 
-  console.log(incomesBalances);
+  // Получаем сумму расходов со всех карт
+  const expensesBalances: Balance[] = useMemo(() => {
+    if (!localCurrency.length || !localAccounts.length) return [];
+
+    return localCurrency.map((targetCurrency) => {
+      const total = localExpensesTransactions.reduce((sum, transaction) => {
+        const sourceCurrency = localCurrency.find(
+          (cur) => cur.title === transaction.currency
+        );
+
+        if (sourceCurrency) {
+          const convertedAmount =
+            (transaction.amount / sourceCurrency.exchangeRate) *
+            targetCurrency.exchangeRate;
+          return sum + convertedAmount;
+        }
+        return sum;
+      }, 0);
+
+      return {
+        currency: targetCurrency.title,
+        total: total,
+      };
+    });
+  }, [localAccounts, localCurrency]);
 
   const accountsBalanceInMainCurrency =
     accountsBalances.find((b) => b.currency === localMainCurrency)?.total || 0;
   const incomesBalanceInMainCurrency =
     incomesBalances.find((b) => b.currency === localMainCurrency)?.total || 0;
+  const expensesBalanceInMainCurrency =
+    expensesBalances.find((b) => b.currency === localMainCurrency)?.total || 0;
 
-  const balance = accountsBalanceInMainCurrency + incomesBalanceInMainCurrency;
-
-  // const calculateIncomeTransactionsSumsInCurrencies = () => {
-  //   if (localCurrency && localIncomeTransactions) {
-  //     // Рассчитать суммы для каждой валюты
-  //     const sums = localCurrency.map((targetCurrency) => {
-  //       const total = localIncomeTransactions.reduce((sum, transaction) => {
-  //         // Найти курс исходной валюты
-  //         const sourceCurrency = localCurrency.find(
-  //           (cur) => cur.title === transaction.currency
-  //         );
-
-  //         if (!sourceCurrency) return sum; // Пропустить, если курс не найден
-
-  //         // Перевести в целевую валюту
-  //         const amountInTargetCurrency =
-  //           (Number(transaction.amount) / sourceCurrency.exchangeRate) *
-  //           targetCurrency.exchangeRate;
-
-  //         return sum + amountInTargetCurrency;
-  //       }, 0);
-
-  //       return {
-  //         currency: targetCurrency.title,
-  //         total: total,
-  //       };
-  //     });
-  //     return sums;
-  //   } else {
-  //     return [{ currency: "", total: 0 }];
-  //   }
-  // };
-
-  // const incomeTransactionsSums = calculateIncomeTransactionsSumsInCurrencies();
-
-  // const totalBalance =
-  //   localAccountsSumsInMainCurrency +
-  //   incomeTransactionsSums.filter(
-  //     (res) => res.currency === localMainCurrency
-  //   )[0].total;
+  const balance =
+    accountsBalanceInMainCurrency +
+    incomesBalanceInMainCurrency +
+    expensesBalanceInMainCurrency;
 
   return (
     <>

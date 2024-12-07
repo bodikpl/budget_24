@@ -6,19 +6,25 @@ import ExpenseModalContent from "../ModalContents/ExpenseModalContent";
 import { Currency, Transaction } from "../../lib/types";
 import { useLocalStorage } from "usehooks-ts";
 
-type TotalsProps = { incomeTransactions: Transaction[] };
+type TotalsProps = {
+  incomeTransactions: Transaction[];
+  expensesTransactions: Transaction[];
+};
 
-export default function Totals({ incomeTransactions }: TotalsProps) {
+export default function Totals({
+  incomeTransactions,
+  expensesTransactions,
+}: TotalsProps) {
   const [incomeModal, setIncomeModal] = useState(false);
   const [expensesModal, setExpensesModal] = useState(false);
 
   const [localCurrency] = useLocalStorage<Currency[]>("localCurrency", []);
   const [localMainCurrency] = useLocalStorage("localMainCurrency", "");
 
-  const calculateSumsInCurrencies = () => {
+  const calculateSumsInCurrencies = (transactions: Transaction[]) => {
     // Рассчитать суммы для каждой валюты
     const sums = localCurrency.map((targetCurrency) => {
-      const total = incomeTransactions.reduce((sum, transaction) => {
+      const total = transactions.reduce((sum, transaction) => {
         // Найти курс исходной валюты
         const sourceCurrency = localCurrency.find(
           (cur) => cur.title === transaction.currency
@@ -43,7 +49,8 @@ export default function Totals({ incomeTransactions }: TotalsProps) {
     return sums;
   };
 
-  const result = calculateSumsInCurrencies();
+  const incomeTotals = calculateSumsInCurrencies(incomeTransactions);
+  const expensesTotals = calculateSumsInCurrencies(expensesTransactions);
 
   return (
     <>
@@ -67,14 +74,19 @@ export default function Totals({ incomeTransactions }: TotalsProps) {
           title="Доходы"
           color="#dcfce7"
           amount={
-            result.filter((res) => res.currency === localMainCurrency)[0].total
+            incomeTotals.filter((res) => res.currency === localMainCurrency)[0]
+              .total
           }
           setModal={setIncomeModal}
         />
         <TotalCard
           title="Расходы"
           color="#fee2e2"
-          amount={6327}
+          amount={
+            expensesTotals.filter(
+              (res) => res.currency === localMainCurrency
+            )[0].total
+          }
           setModal={setExpensesModal}
         />
       </section>

@@ -34,7 +34,11 @@ export default function TransactionCard({ transaction }: TransactionCardProps) {
             <p>
               {transaction.category}, {formattedDate}
             </p>
-            <p className="whitespace-nowrap text-right text-[#EA4335] text-xl font-aptosBold">
+            <p
+              className={`whitespace-nowrap text-right ${
+                transaction.amount > 0 ? "text-[#34A853]" : "text-[#EA4335]"
+              }  text-xl font-aptosBold`}
+            >
               {transaction.amount}{" "}
               <span className="text-xs">{transaction.currency}</span>
             </p>

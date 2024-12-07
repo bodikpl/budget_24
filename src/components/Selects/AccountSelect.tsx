@@ -1,13 +1,11 @@
 import { useLocalStorage } from "usehooks-ts";
 import { Account } from "../../lib/types";
 
-type IncomeAccountSelectProps = {
+type AccountSelectProps = {
   setModal: (value: Account) => void;
 };
 
-export default function IncomeAccountSelect({
-  setModal,
-}: IncomeAccountSelectProps) {
+export default function AccountSelect({ setModal }: AccountSelectProps) {
   const [localAccounts] = useLocalStorage<Account[]>("localAccounts", []);
   return (
     <>
