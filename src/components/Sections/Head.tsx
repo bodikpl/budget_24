@@ -17,12 +17,8 @@ export default function Head() {
   const [localMainCurrency] = useLocalStorage<string>("localMainCurrency", "");
   const [localAccounts] = useLocalStorage<Account[]>("localAccounts", []);
   const [localCurrency] = useLocalStorage<Currency[]>("localCurrency", []);
-  const [localIncomeTransactions] = useLocalStorage<Transaction[]>(
-    "localIncomeTransactions",
-    []
-  );
-  const [localExpensesTransactions] = useLocalStorage<Transaction[]>(
-    "localExpensesTransactions",
+  const [localTransactions] = useLocalStorage<Transaction[]>(
+    "localTransactions",
     []
   );
 
@@ -70,19 +66,21 @@ export default function Head() {
     if (!localCurrency.length || !localAccounts.length) return [];
 
     return localCurrency.map((targetCurrency) => {
-      const total = localIncomeTransactions.reduce((sum, transaction) => {
-        const sourceCurrency = localCurrency.find(
-          (cur) => cur.title === transaction.currency
-        );
+      const total = localTransactions
+        .filter((transaction) => transaction.transactionType === "income")
+        .reduce((sum, transaction) => {
+          const sourceCurrency = localCurrency.find(
+            (cur) => cur.title === transaction.currency
+          );
 
-        if (sourceCurrency) {
-          const convertedAmount =
-            (transaction.amount / sourceCurrency.exchangeRate) *
-            targetCurrency.exchangeRate;
-          return sum + convertedAmount;
-        }
-        return sum;
-      }, 0);
+          if (sourceCurrency) {
+            const convertedAmount =
+              (transaction.amount / sourceCurrency.exchangeRate) *
+              targetCurrency.exchangeRate;
+            return sum + convertedAmount;
+          }
+          return sum;
+        }, 0);
 
       return {
         currency: targetCurrency.title,
@@ -96,19 +94,21 @@ export default function Head() {
     if (!localCurrency.length || !localAccounts.length) return [];
 
     return localCurrency.map((targetCurrency) => {
-      const total = localExpensesTransactions.reduce((sum, transaction) => {
-        const sourceCurrency = localCurrency.find(
-          (cur) => cur.title === transaction.currency
-        );
+      const total = localTransactions
+        .filter((transaction) => transaction.transactionType === "expense")
+        .reduce((sum, transaction) => {
+          const sourceCurrency = localCurrency.find(
+            (cur) => cur.title === transaction.currency
+          );
 
-        if (sourceCurrency) {
-          const convertedAmount =
-            (transaction.amount / sourceCurrency.exchangeRate) *
-            targetCurrency.exchangeRate;
-          return sum + convertedAmount;
-        }
-        return sum;
-      }, 0);
+          if (sourceCurrency) {
+            const convertedAmount =
+              (transaction.amount / sourceCurrency.exchangeRate) *
+              targetCurrency.exchangeRate;
+            return sum + convertedAmount;
+          }
+          return sum;
+        }, 0);
 
       return {
         currency: targetCurrency.title,

@@ -15,6 +15,7 @@ export type Account = {
 
 export type Transaction = {
   id: string;
+  transactionType: string;
   category: string;
   accountTitle: string;
   currency: string;

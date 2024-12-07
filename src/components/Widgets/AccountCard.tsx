@@ -9,8 +9,8 @@ type AccountCardProps = { account: Account };
 
 export default function AccountCard({ account }: AccountCardProps) {
   const [modal, setModal] = useState(false);
-  const [localIncomeTransactions] = useLocalStorage<Transaction[]>(
-    "localIncomeTransactions",
+  const [localTransactions] = useLocalStorage<Transaction[]>(
+    "localTransactions",
     []
   );
   const [localExpensesTransactions] = useLocalStorage<Transaction[]>(
@@ -18,10 +18,7 @@ export default function AccountCard({ account }: AccountCardProps) {
     []
   );
 
-  const transactions = [
-    ...localIncomeTransactions,
-    ...localExpensesTransactions,
-  ];
+  const transactions = [...localTransactions, ...localExpensesTransactions];
 
   const getTotalAmountByAccountTitle = (
     transactions: Transaction[],
@@ -47,13 +44,13 @@ export default function AccountCard({ account }: AccountCardProps) {
       <div
         style={{ backgroundColor: account.color }}
         onClick={() => setModal(true)}
-        className="rounded-lg p-2 w-full flex justify-between items-start text-xs text-white font-aptosSemiBold cursor-pointer"
+        className="rounded-lg p-2 w-full flex justify-between items-start text-white font-aptosSemiBold cursor-pointer"
       >
         <div>
-          <p>
+          <p className="text-xs">
             {account.title}, <span>{account.currency}</span>
           </p>
-          <p className="text-base font-aptosBold">
+          <p className="text-lg font-aptosBold">
             {account.initialBalance + total}{" "}
             <span className="text-xs">{account.currency}</span>
           </p>

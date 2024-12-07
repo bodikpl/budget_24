@@ -17,7 +17,12 @@ export default function TransactionCard({ transaction }: TransactionCardProps) {
         <Modal
           title="Транзакция"
           setModal={setTransactionModal}
-          node={<TransactionModalContent transaction={transaction} />}
+          node={
+            <TransactionModalContent
+              transaction={transaction}
+              setModal={setTransactionModal}
+            />
+          }
         />
       )}
 

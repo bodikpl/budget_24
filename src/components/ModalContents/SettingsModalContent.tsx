@@ -3,8 +3,7 @@ import { CURRENCY } from "../../lib/data";
 import { useLocalStorage } from "usehooks-ts";
 import { Currency } from "../../lib/types";
 import Modal from "../Widgets/Modal";
-import IncomeCategoriesModalContent from "./IncomeCategoriesModalContent";
-import ExpensesCategoriesModalContent from "./ExpensesCategoriesModalContent";
+import CategoriesModalContent from "./CategoriesModalContent";
 
 type SettingsModalContentProps = {
   setModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -38,7 +37,7 @@ export default function SettingsModalContent({
   };
 
   const [incomeCategoriesModal, setIncomeCategoriesModal] = useState(false);
-  const [expensesCategoriesModal, setExpensesCategoriesModal] = useState(false);
+  const [expenseCategoriesModal, setExpensesCategoriesModal] = useState(false);
 
   return (
     <>
@@ -47,19 +46,25 @@ export default function SettingsModalContent({
           title="Категории доходов"
           setModal={setIncomeCategoriesModal}
           node={
-            <IncomeCategoriesModalContent setModal={setIncomeCategoriesModal} />
+            <CategoriesModalContent
+              categoriesType="income"
+              setModal={setIncomeCategoriesModal}
+            />
           }
+          subModal={true}
         />
       )}
-      {expensesCategoriesModal && (
+      {expenseCategoriesModal && (
         <Modal
           title="Категории расходов"
           setModal={setExpensesCategoriesModal}
           node={
-            <ExpensesCategoriesModalContent
+            <CategoriesModalContent
+              categoriesType="expense"
               setModal={setExpensesCategoriesModal}
             />
           }
+          subModal={true}
         />
       )}
 
@@ -90,11 +95,11 @@ export default function SettingsModalContent({
             {localCurrency
               .filter((currency) => currency.title !== mainCurrency)
               .map(({ id, title, exchangeRate }) => (
-                <div key={id} className="flex items-center gap-4">
-                  <p>{title}</p>
+                <div key={id} className="flex items-center">
+                  <p className="w-1/2">{title}</p>
                   <input
                     type="number"
-                    className="w-full"
+                    className="w-full py-1 bg-neutral-100 rounded-lg text-center"
                     value={exchangeRate || ""}
                     onChange={(e) =>
                       handleExchangeRateChange(id, e.target.value)

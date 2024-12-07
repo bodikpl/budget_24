@@ -88,14 +88,14 @@ export default function AddingAccountModalContent({
           />
 
           <p className="mt-4">Цвет</p>
-          <div className="mt-1 flex justify-around">
+          <div className="mt-1 flex justify-between">
             {COLORS.map((el) => (
               <button
                 key={el}
                 style={{ backgroundColor: el }}
                 className={`${
-                  selectedColor === el ? "ring-2 ring-neutral-500" : ""
-                } w-10 h-10 aspect-square px-4 rounded-full`}
+                  selectedColor === el ? "scale-[115%]" : ""
+                } w-10 h-10 aspect-square px-4 rounded-full transition-all`}
                 onClick={() => setSelectedColor(el)}
               ></button>
             ))}
@@ -103,7 +103,6 @@ export default function AddingAccountModalContent({
 
           <button
             className="mt-4 ml-auto block bg-black/5 aspect-square px-4 h-10 rounded-lg leading-none transition-colors hover:bg-black/10 disabled:hidden"
-            //   onClick={() => setModal(false)}
             onClick={handleSaveAccount}
             disabled={!title || !selectedCurrency}
           >

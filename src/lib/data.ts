@@ -1,4 +1,11 @@
-export const COLORS = ["#EA4335", "#FFB705", "#34A853", "#4285F4"];
+export const COLORS = [
+  "#EA4335",
+  "#FFB705",
+  "#E65100",
+  "#34A853",
+  "#4285F4",
+  "#000",
+];
 
 export const INCOME_CATEGORIES = [
   "Зарплата",

@@ -1,20 +1,15 @@
 import { useState } from "react";
 import Modal from "../Widgets/Modal";
 import TotalCard from "../Widgets/TotalCard";
-import IncomeModalContent from "../ModalContents/IncomeModalContent";
-import ExpenseModalContent from "../ModalContents/ExpenseModalContent";
 import { Currency, Transaction } from "../../lib/types";
 import { useLocalStorage } from "usehooks-ts";
+import AddingTransactionModalContent from "../ModalContents/AddingTransactionModalContent";
 
 type TotalsProps = {
-  incomeTransactions: Transaction[];
-  expensesTransactions: Transaction[];
+  transactions: Transaction[];
 };
 
-export default function Totals({
-  incomeTransactions,
-  expensesTransactions,
-}: TotalsProps) {
+export default function Totals({ transactions }: TotalsProps) {
   const [incomeModal, setIncomeModal] = useState(false);
   const [expensesModal, setExpensesModal] = useState(false);
 
@@ -49,8 +44,17 @@ export default function Totals({
     return sums;
   };
 
-  const incomeTotals = calculateSumsInCurrencies(incomeTransactions);
-  const expensesTotals = calculateSumsInCurrencies(expensesTransactions);
+  const incomeTotals = calculateSumsInCurrencies(
+    transactions.filter(
+      (transaction) => transaction.transactionType === "income"
+    )
+  );
+
+  const expensesTotals = calculateSumsInCurrencies(
+    transactions.filter(
+      (transaction) => transaction.transactionType === "expense"
+    )
+  );
 
   return (
     <>
@@ -58,14 +62,24 @@ export default function Totals({
         <Modal
           title="Добавить доход"
           setModal={setIncomeModal}
-          node={<IncomeModalContent setModal={setIncomeModal} />}
+          node={
+            <AddingTransactionModalContent
+              transactionType="income"
+              setModal={setIncomeModal}
+            />
+          }
         />
       )}
       {expensesModal && (
         <Modal
           title="Внести расход"
           setModal={setExpensesModal}
-          node={<ExpenseModalContent setModal={setExpensesModal} />}
+          node={
+            <AddingTransactionModalContent
+              transactionType="expense"
+              setModal={setExpensesModal}
+            />
+          }
         />
       )}
 
@@ -74,8 +88,9 @@ export default function Totals({
           title="Доходы"
           color="#dcfce7"
           amount={
-            incomeTotals.filter((res) => res.currency === localMainCurrency)[0]
-              .total
+            incomeTotals.filter(
+              (total) => total.currency === localMainCurrency
+            )[0].total
           }
           setModal={setIncomeModal}
         />
@@ -84,7 +99,7 @@ export default function Totals({
           color="#fee2e2"
           amount={
             expensesTotals.filter(
-              (res) => res.currency === localMainCurrency
+              (total) => total.currency === localMainCurrency
             )[0].total
           }
           setModal={setExpensesModal}

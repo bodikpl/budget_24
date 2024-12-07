@@ -4,38 +4,39 @@ import { useLocalStorage } from "usehooks-ts";
 import { Account, Transaction } from "../../lib/types";
 import Modal from "../Widgets/Modal";
 import AccountSelect from "../Selects/AccountSelect";
-import { INCOME_CATEGORIES } from "../../lib/data";
+import { EXPENSES_CATEGORIES, INCOME_CATEGORIES } from "../../lib/data";
 import CategoriesSelect from "../Selects/CategoriesSelect";
 
-type IncomeModalContentProps = {
+type AddingTransactionModalContentProps = {
+  transactionType: "income" | "expense";
   setModal: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-export default function IncomeModalContent({
+export default function AddingTransactionModalContent({
+  transactionType,
   setModal,
-}: IncomeModalContentProps) {
+}: AddingTransactionModalContentProps) {
   const [accountSelectModal, setAccountSelectModal] = useState(false);
-  const [incomeCategoriesSelectModal, setIncomeCategoriesSelectModal] =
-    useState(false);
+  const [categoriesSelectModal, setCategoriesSelectModal] = useState(false);
 
   const [selectedAccount, setSelectedAccount] = useState<null | Account>(null);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState("");
 
-  const handleIncomeAccountSelect = (value: Account) => {
+  const handleAccountSelect = (value: Account) => {
     setSelectedAccount(value);
     setAccountSelectModal(false);
   };
 
-  const handleIncomeCategoriesSelect = (value: string) => {
+  const handleCategoriesSelect = (value: string) => {
     setSelectedCategory(value);
-    setIncomeCategoriesSelectModal(false);
+    setCategoriesSelectModal(false);
   };
 
-  const [localIncomeTransactions, setLocalIncomeTransactions] = useLocalStorage<
+  const [localTransactions, setLocalTransactions] = useLocalStorage<
     Transaction[]
-  >("localIncomeTransactions", []);
+  >("localTransactions", []);
 
   // Функция для сохранения или обновления транзакции
   const handleSaveTransaction = () => {
@@ -47,25 +48,23 @@ export default function IncomeModalContent({
         currency: selectedAccount.currency,
         description,
         amount: Number(amount),
+        transactionType,
         date: Date.now(),
       };
 
-      const existingTransactionIndex = localIncomeTransactions.findIndex(
+      const existingTransactionIndex = localTransactions.findIndex(
         (transaction) => transaction.id === newTransaction.id
       );
 
       if (existingTransactionIndex > -1) {
         // Если транзакция существует, обновляем ее
-        const updatedTransactions = [...localIncomeTransactions];
+        const updatedTransactions = [...localTransactions];
         updatedTransactions[existingTransactionIndex] = newTransaction;
-        setLocalIncomeTransactions(updatedTransactions);
+        setLocalTransactions(updatedTransactions);
         setModal(false);
       } else {
         // Если транзакциии нет, добавляем новую
-        setLocalIncomeTransactions([
-          ...localIncomeTransactions,
-          newTransaction,
-        ]);
+        setLocalTransactions([...localTransactions, newTransaction]);
         setModal(false);
       }
     }
@@ -77,17 +76,23 @@ export default function IncomeModalContent({
         <Modal
           title="Счета"
           setModal={setAccountSelectModal}
-          node={<AccountSelect setModal={handleIncomeAccountSelect} />}
+          node={<AccountSelect setModal={handleAccountSelect} />}
         />
       )}
-      {incomeCategoriesSelectModal && (
+      {categoriesSelectModal && (
         <Modal
-          title="Категории доходов"
-          setModal={setIncomeCategoriesSelectModal}
+          title={`Категории ${
+            transactionType === "income" ? "доходов" : "расходов"
+          }`}
+          setModal={setCategoriesSelectModal}
           node={
             <CategoriesSelect
-              categories={INCOME_CATEGORIES}
-              setModal={handleIncomeCategoriesSelect}
+              categories={
+                transactionType === "income"
+                  ? INCOME_CATEGORIES
+                  : EXPENSES_CATEGORIES
+              }
+              setModal={handleCategoriesSelect}
             />
           }
         />
@@ -101,10 +106,7 @@ export default function IncomeModalContent({
       </button>
 
       <p className="mt-2">Категория</p>
-      <button
-        className="btn_2"
-        onClick={() => setIncomeCategoriesSelectModal(true)}
-      >
+      <button className="btn_2" onClick={() => setCategoriesSelectModal(true)}>
         {selectedCategory ? selectedCategory : "Выберите категорию"}
       </button>
 
