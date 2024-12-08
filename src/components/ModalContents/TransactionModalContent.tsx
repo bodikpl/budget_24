@@ -7,6 +7,10 @@ import AccountSelect from "../Selects/AccountSelect";
 import { EXPENSES_CATEGORIES, INCOME_CATEGORIES } from "../../lib/data";
 import CategoriesSelect from "../Selects/CategoriesSelect";
 import Alert from "../Widgets/Alert";
+import Calendar from "../Widgets/Calendar";
+import { format } from "date-fns";
+import { ru } from "date-fns/locale";
+import { getFormattedDates } from "../../lib/fn";
 
 type TransactionModalContentProps = {
   transactionType: "income" | "expense";
@@ -23,6 +27,7 @@ export default function TransactionModalContent({
 }: TransactionModalContentProps) {
   const [accountSelectModal, setAccountSelectModal] = useState(false);
   const [categoriesSelectModal, setCategoriesSelectModal] = useState(false);
+  const [dateSelectModal, setDateSelectModal] = useState(false);
 
   const [localAccounts] = useLocalStorage<Account[]>("localAccounts", []);
   const transactionAccount = localAccounts.filter(
@@ -38,6 +43,7 @@ export default function TransactionModalContent({
   const [description, setDescription] = useState(
     transaction ? transaction.description : ""
   );
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const [amount, setAmount] = useState(
     transaction
       ? transaction.transactionType === "income"
@@ -72,7 +78,7 @@ export default function TransactionModalContent({
         amount:
           transactionType === "income" ? Number(amount) : -1 * Number(amount),
         transactionType,
-        date: Date.now(),
+        date: selectedDate,
       };
 
       const existingTransactionIndex = localTransactions.findIndex(
@@ -101,6 +107,7 @@ export default function TransactionModalContent({
   };
 
   const [deleteAlert, setDeleteAlert] = useState(false);
+  const formatedSelectedDay = getFormattedDates(selectedDate);
 
   return (
     <>
@@ -113,6 +120,19 @@ export default function TransactionModalContent({
             setModal(false);
             transaction && handleDeleteTransaction(transaction.id);
           }}
+        />
+      )}
+      {dateSelectModal && (
+        <Modal
+          title="Счета"
+          setModal={setDateSelectModal}
+          node={
+            <Calendar
+              selected={selectedDate}
+              onDateSelect={setSelectedDate}
+              setModal={setDateSelectModal}
+            />
+          }
         />
       )}
       {accountSelectModal && (
@@ -157,22 +177,30 @@ export default function TransactionModalContent({
           : "Выберите счет"}
       </button>
 
-      <p className="mt-2">Категория</p>
-      <button className="btn_2" onClick={() => setCategoriesSelectModal(true)}>
-        {selectedCategory ? selectedCategory : "Выберите категорию"}
-      </button>
+      <div className="mt-4 flex gap-4">
+        <div className="w-full">
+          <button
+            className="btn_2"
+            onClick={() => setCategoriesSelectModal(true)}
+          >
+            {selectedCategory ? selectedCategory : "Категория"}
+          </button>
+        </div>
 
-      <p className="mt-2">Описание</p>
+        <button className="btn_2" onClick={() => setDateSelectModal(true)}>
+          {formatedSelectedDay}
+        </button>
+      </div>
+
       <input
         type="text"
         value={description}
-        placeholder="Опционально"
-        className="btn_2"
+        placeholder="Описание (опционально)"
+        className="mt-4 btn_2"
         onChange={(e) => setDescription(e.target.value)}
       />
 
-      <h3 className="mt-4">Сумма</h3>
-      <div className="flex gap-4 justify-between">
+      <div className="mt-4 flex gap-4 justify-between">
         <input
           type="number"
           value={amount}

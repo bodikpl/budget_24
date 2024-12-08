@@ -1,13 +1,6 @@
+import { differenceInCalendarDays, format } from "date-fns";
 import { Currency, Transaction } from "./types";
-
-export const getFormattedDate = (date: number) => {
-  const editedDate = new Date(date);
-  const day = String(editedDate.getDate()).padStart(2, "0"); // День (с ведущим нулем)
-  const month = String(editedDate.getMonth() + 1).padStart(2, "0"); // Месяц (нумерация с 0)
-  // const year = date.getFullYear(); // Год
-  const formattedDate = `${day}.${month}`;
-  return formattedDate;
-};
+import { ru } from "date-fns/locale";
 
 export const calculateSumsInCurrencies = (
   transactions: Transaction[],
@@ -38,4 +31,29 @@ export const calculateSumsInCurrencies = (
   });
 
   return sums;
+};
+
+export const getFormattedDates = (date: Date): string => {
+  const today = new Date();
+  const diffDays = differenceInCalendarDays(date, today);
+
+  let datePrefix = "";
+  if (diffDays === 0) {
+    datePrefix = "Сегодня";
+  } else if (diffDays === 1) {
+    datePrefix = "Завтра";
+  } else if (diffDays === 2) {
+    datePrefix = "Послезавтра";
+  } else if (diffDays === -1) {
+    datePrefix = "Вчера";
+  } else if (diffDays === -2) {
+    datePrefix = "Позавчера";
+  } else {
+    const dayName = format(date, "dd.MM.yy", { locale: ru });
+    // Приводим его к виду с большой буквы
+    datePrefix =
+      dayName.charAt(0).toUpperCase() + dayName.slice(1).toLowerCase();
+  }
+
+  return datePrefix;
 };

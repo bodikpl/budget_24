@@ -3,14 +3,14 @@ import { useLocalStorage } from "usehooks-ts";
 import Modal from "./Modal";
 import TransactionModalContent from "../ModalContents/TransactionModalContent";
 import { Account, Transaction } from "../../lib/types";
-import { getFormattedDate } from "../../lib/fn";
+import { getFormattedDates } from "../../lib/fn";
 
 type TransactionCardProps = { transaction: Transaction };
 
 export default function TransactionCard({ transaction }: TransactionCardProps) {
   const [transactionModal, setTransactionModal] = useState(false);
 
-  const formattedDate = getFormattedDate(transaction.date);
+  const formattedDate = getFormattedDates(transaction.date);
 
   const [localAccounts] = useLocalStorage<Account[]>("localAccounts", []);
   const transactionAccount = localAccounts.filter(
