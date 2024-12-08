@@ -4,11 +4,7 @@ import { useLocalStorage } from "usehooks-ts";
 import { Account, Currency, Transaction } from "../../lib/types";
 import { useState } from "react";
 
-type Props = {
-  setModal: React.Dispatch<React.SetStateAction<boolean>>;
-};
-
-export default function SyncModalContent({ setModal }: Props) {
+export default function SyncModalContent() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
