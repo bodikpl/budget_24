@@ -25,18 +25,6 @@ function App() {
 
         {localTransactions.length > 0 ? (
           <div className="w-full flex flex-col gap-4">
-            <section className="flex gap-2 select-none">
-              <button className="w-full rounded-lg p-2 text-neutral-500 hover:bg-neutral-200 hover:text-neutral-800 transition-all">
-                Сегодня
-              </button>
-              <button className="w-full bg-neutral-200 rounded-lg p-2 font-aptosSemiBold hover:bg-neutral-200 hover:text-neutral-800 transition-all">
-                За месяц
-              </button>
-              <button className="w-full rounded-lg p-2 text-neutral-500 hover:bg-neutral-200 hover:text-neutral-800 transition-all">
-                За год
-              </button>
-            </section>
-
             <Transactions transactions={localTransactions} />
           </div>
         ) : (
