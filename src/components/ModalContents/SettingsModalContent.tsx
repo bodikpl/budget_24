@@ -1,13 +1,7 @@
 import { useState } from "react";
-import {
-  CURRENCY,
-  EXPENSES_CATEGORIES,
-  INCOME_CATEGORIES,
-} from "../../lib/data";
 import { useLocalStorage } from "usehooks-ts";
+import { CURRENCY } from "../../lib/data";
 import { Currency } from "../../lib/types";
-import Modal from "../Widgets/Modal";
-import CategoriesSelect from "../Selects/CategoriesSelect";
 import Alert from "../Widgets/Alert";
 
 type SettingsModalContentProps = {
@@ -54,9 +48,6 @@ export default function SettingsModalContent({
     }
   };
 
-  const [incomeCategoriesModal, setIncomeCategoriesModal] = useState(false);
-  const [expenseCategoriesModal, setExpensesCategoriesModal] = useState(false);
-
   const [deleteAllAlert, setDeleteAllAlert] = useState(false);
   const [changeCurrencyAlert, setChangeCurrencyAlert] = useState(false);
 
@@ -84,33 +75,6 @@ export default function SettingsModalContent({
             handleCurrencySelection(currencyForSelect);
             setChangeCurrencyAlert(false);
           }}
-        />
-      )}
-
-      {incomeCategoriesModal && (
-        <Modal
-          title="Категории доходов"
-          setModal={setIncomeCategoriesModal}
-          node={
-            <CategoriesSelect
-              categories={INCOME_CATEGORIES}
-              onClose={setIncomeCategoriesModal}
-            />
-          }
-          subModal={true}
-        />
-      )}
-      {expenseCategoriesModal && (
-        <Modal
-          title="Категории расходов"
-          setModal={setExpensesCategoriesModal}
-          node={
-            <CategoriesSelect
-              categories={EXPENSES_CATEGORIES}
-              onClose={setExpensesCategoriesModal}
-            />
-          }
-          subModal={true}
         />
       )}
 
@@ -163,22 +127,6 @@ export default function SettingsModalContent({
           </div>
         </>
       )}
-
-      <h3 className="mt-4">Категории</h3>
-      <div className="mt-1 grid grid-cols-2 gap-4">
-        <button
-          className="btn_2"
-          onClick={() => setIncomeCategoriesModal(true)}
-        >
-          Доходы
-        </button>
-        <button
-          className="btn_2"
-          onClick={() => setExpensesCategoriesModal(true)}
-        >
-          Расходы
-        </button>
-      </div>
 
       <h3 className="mt-4">Данные приложения</h3>
       <div className="mt-1 grid grid-cols-2 gap-4">

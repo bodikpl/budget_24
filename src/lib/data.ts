@@ -17,7 +17,7 @@ export const INCOME_CATEGORIES = [
 export const EXPENSES_CATEGORIES = [
   "Аптека",
   "Аренда",
-  "Ежемесячные платежи",
+  "Платежи",
   "Заправка",
   "Дом",
   "Одежда",
@@ -27,6 +27,8 @@ export const EXPENSES_CATEGORIES = [
   "Связь",
   "Учеба",
   "Школа",
+  "Редкое",
+  "Другое",
 ];
 
 export const CURRENCY = [
