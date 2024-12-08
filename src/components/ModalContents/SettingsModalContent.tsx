@@ -75,7 +75,7 @@ export default function SettingsModalContent({
         <Modal
           title="Синхронизация"
           setModal={setSyncModal}
-          node={<SyncModalContent setModal={setSyncModal} />}
+          node={<SyncModalContent />}
         />
       )}
       {deleteAllAlert && (
