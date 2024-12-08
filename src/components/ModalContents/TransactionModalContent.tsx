@@ -8,8 +8,6 @@ import { EXPENSES_CATEGORIES, INCOME_CATEGORIES } from "../../lib/data";
 import CategoriesSelect from "../Selects/CategoriesSelect";
 import Alert from "../Widgets/Alert";
 import Calendar from "../Widgets/Calendar";
-import { format } from "date-fns";
-import { ru } from "date-fns/locale";
 import { getFormattedDates } from "../../lib/fn";
 
 type TransactionModalContentProps = {
