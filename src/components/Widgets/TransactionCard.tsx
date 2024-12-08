@@ -56,7 +56,7 @@ export default function TransactionCard({ transaction }: TransactionCardProps) {
         <div className="w-full ml-4 flex flex-col justify-center">
           <div className="flex gap-4 justify-between items-center">
             <p>
-              {transaction.category}, {formattedDate}
+              {transaction.description}, {formattedDate}
             </p>
             <p
               className={`whitespace-nowrap text-right ${
@@ -67,8 +67,9 @@ export default function TransactionCard({ transaction }: TransactionCardProps) {
               <span className="text-xs">{transaction.currency}</span>
             </p>
           </div>
+
           <div className="flex gap-4 justify-between text-sm text-neutral-500">
-            <p>{transaction.description}</p>
+            <p>{transaction.category}</p>
             <p className="whitespace-nowrap font-aptosSemiBold">
               {transactionAccount.title}, {transaction.currency}
             </p>
