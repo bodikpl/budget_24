@@ -2,7 +2,12 @@ import { useState } from "react";
 import Modal from "../Widgets/Modal";
 import TransactionCard from "../Widgets/TransactionCard";
 import { Transaction } from "../../lib/types";
-import { FilterIcon, SortUpIcon } from "../Widgets/Icons";
+import {
+  FilterIcon,
+  SortByDate,
+  SortDownIcon,
+  SortUpIcon,
+} from "../Widgets/Icons";
 import { isSameDay, isSameMonth, isSameYear } from "date-fns";
 
 type TransactionsProps = { transactions: Transaction[] };
@@ -157,7 +162,9 @@ export default function Transactions({ transactions }: TransactionsProps) {
               className="btn_1 flex justify-center items-center"
               onClick={toggleSortOrder}
             >
-              <SortUpIcon />
+              {sortOrder === "none" && <SortByDate />}
+              {sortOrder === "asc" && <SortUpIcon />}
+              {sortOrder === "desc" && <SortDownIcon />}
             </button>
             <button
               className="btn_1 flex justify-center items-center"
