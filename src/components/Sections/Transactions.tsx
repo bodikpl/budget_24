@@ -1,15 +1,9 @@
 import { useState } from "react";
 import Modal from "../Widgets/Modal";
 import TransactionCard from "../Widgets/TransactionCard";
-import { Currency, Transaction } from "../../lib/types";
-import {
-  FilterIcon,
-  SortByDate,
-  SortDownIcon,
-  SortUpIcon,
-} from "../Widgets/Icons";
+import { Transaction } from "../../lib/types";
+import { FilterIcon, SortUpIcon } from "../Widgets/Icons";
 import { isSameDay, isSameMonth, isSameYear } from "date-fns";
-import { useLocalStorage } from "usehooks-ts";
 
 type TransactionsProps = { transactions: Transaction[] };
 
@@ -21,20 +15,8 @@ export default function Transactions({ transactions }: TransactionsProps) {
   );
   const [type, setType] = useState<"all" | "expense" | "income">("all");
   const [sortOrder, setSortOrder] = useState<"none" | "asc" | "desc">("none");
-  const [selectedCategory, setSelectedCategory] = useState<string | "all">(
-    "all"
-  );
 
   const today = new Date();
-
-  const [localCurrency] = useLocalStorage<Currency[]>("localCurrency", []);
-  const [localMainCurrency] = useLocalStorage<string>("localMainCurrency", "");
-
-  // Функция для получения курса валюты по ее названию
-  const getExchangeRate = (currencyTitle: string) => {
-    const currency = localCurrency.find((c) => c.title === currencyTitle);
-    return currency ? currency.exchangeRate : 1; // Если курс не найден, считаем, что это 1
-  };
 
   // Фильтрация по дате
   const filteredByDate = transactions.filter((transaction) => {
@@ -47,6 +29,7 @@ export default function Transactions({ transactions }: TransactionsProps) {
     if (filter === "year") {
       return isSameYear(transaction.date, today);
     }
+
     return true;
   });
 
@@ -61,49 +44,25 @@ export default function Transactions({ transactions }: TransactionsProps) {
     return true;
   });
 
-  // Фильтрация по категории
-  const filteredByCategory = filteredByType.filter((transaction) => {
-    if (selectedCategory === "all") {
-      return true;
-    }
-    return transaction.category === selectedCategory;
-  });
-
-  // Расчет сумм расходов по категориям с учетом курса валют
-  const categorySums = filteredByDate.reduce((acc, transaction) => {
-    if (transaction.transactionType === "expense") {
-      const exchangeRate = getExchangeRate(transaction.currency); // Получаем курс валюты для текущей транзакции
-      const amountInBaseCurrency = transaction.amount * exchangeRate; // Переводим сумму в основную валюту
-      acc[transaction.category] =
-        (acc[transaction.category] || 0) + amountInBaseCurrency;
-    }
-    return acc;
-  }, {} as Record<string, number>);
-
-  // Сортировка категорий по суммам
-  const sortedCategories = Object.entries(categorySums).sort(
-    (a, b) => b[1] - a[1] // Сортировка по убыванию
-  );
-
-  // Сортировка транзакций
-  const sortedTransactions = [...filteredByCategory].sort((a, b) => {
+  // Сортировка
+  const sortedTransactions = [...filteredByType].sort((a, b) => {
     if (sortOrder === "asc") {
-      return a.amount - b.amount;
+      return a.amount - b.amount; // Сортировка по возрастанию
     }
     if (sortOrder === "desc") {
-      return b.amount - a.amount;
+      return b.amount - a.amount; // Сортировка по убыванию
     }
-    return new Date(b.date).getTime() - new Date(a.date).getTime();
+    return new Date(b.date).getTime() - new Date(a.date).getTime(); // Исходная сортировка по дате
   });
 
   // Функция для переключения сортировки
   const toggleSortOrder = () => {
     if (sortOrder === "none") {
-      setSortOrder("desc");
+      setSortOrder("desc"); // Переключаем на убывание
     } else if (sortOrder === "desc") {
-      setSortOrder("asc");
+      setSortOrder("asc"); // Переключаем на возрастание
     } else {
-      setSortOrder("none");
+      setSortOrder("none"); // Сбрасываем к сортировке по дате
     }
   };
 
@@ -155,7 +114,6 @@ export default function Transactions({ transactions }: TransactionsProps) {
               <div className="mt-1 flex gap-2">
                 <button
                   onClick={() => {
-                    setFilterModal(false);
                     setType("all");
                   }}
                   className={`btn_2 ${
@@ -166,7 +124,6 @@ export default function Transactions({ transactions }: TransactionsProps) {
                 </button>
                 <button
                   onClick={() => {
-                    setFilterModal(false);
                     setType("expense");
                   }}
                   className={`btn_2 ${
@@ -177,7 +134,6 @@ export default function Transactions({ transactions }: TransactionsProps) {
                 </button>
                 <button
                   onClick={() => {
-                    setFilterModal(false);
                     setType("income");
                   }}
                   className={`btn_2 ${
@@ -186,37 +142,6 @@ export default function Transactions({ transactions }: TransactionsProps) {
                 >
                   Доходы
                 </button>
-              </div>
-
-              <p className="mt-4">По категориям (суммы расходов)</p>
-              <div className="mt-1 flex flex-col gap-2">
-                <button
-                  onClick={() => {
-                    setFilterModal(false);
-                    setSelectedCategory("all");
-                  }}
-                  className={`btn_2 ${
-                    selectedCategory === "all" ? "ring-2 ring-neutral-500" : ""
-                  }`}
-                >
-                  Все
-                </button>
-                {sortedCategories.map(([category, sum]) => (
-                  <button
-                    key={category}
-                    onClick={() => {
-                      setFilterModal(false);
-                      setSelectedCategory(category);
-                    }}
-                    className={`btn_2 whitespace-nowrap ${
-                      selectedCategory === category
-                        ? "ring-2 ring-neutral-500"
-                        : ""
-                    }`}
-                  >
-                    {category}, {sum.toFixed(2)}, {localMainCurrency}
-                  </button>
-                ))}
               </div>
             </>
           }
@@ -228,17 +153,12 @@ export default function Transactions({ transactions }: TransactionsProps) {
           <h3>Транзакции</h3>
 
           <div className="flex gap-4">
-            {sortedTransactions.length > 0 && (
-              <button
-                className="btn_1 flex justify-center items-center"
-                onClick={toggleSortOrder}
-              >
-                {sortOrder === "none" && <SortByDate />}
-                {sortOrder === "asc" && <SortUpIcon />}
-                {sortOrder === "desc" && <SortDownIcon />}
-              </button>
-            )}
-
+            <button
+              className="btn_1 flex justify-center items-center"
+              onClick={toggleSortOrder}
+            >
+              <SortUpIcon />
+            </button>
             <button
               className="btn_1 flex justify-center items-center"
               onClick={() => setFilterModal(true)}
