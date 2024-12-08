@@ -41,7 +41,9 @@ export default function TransactionModalContent({
   const [description, setDescription] = useState(
     transaction ? transaction.description : ""
   );
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(
+    transaction ? transaction.date : new Date()
+  );
   const [amount, setAmount] = useState(
     transaction
       ? transaction.transactionType === "income"
