@@ -77,7 +77,7 @@ export default function TransactionCard({ transaction }: TransactionCardProps) {
               style={{ backgroundColor: transactionAccount.color }}
               className="whitespace-nowrap text-white dark:text-neutral-100 px-1.5 rounded-md"
             >
-              {transactionAccount.title}, {transaction.currency}
+              {transactionAccount.title}
             </p>
           </div>
         </div>
