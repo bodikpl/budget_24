@@ -2,19 +2,24 @@ import { useState } from "react";
 import Modal from "../Widgets/Modal";
 import TransactionCard from "../Widgets/TransactionCard";
 import { Transaction } from "../../lib/types";
-import { FilterIcon } from "../Widgets/Icons";
-import { format, isSameDay, isSameMonth, isSameYear } from "date-fns";
+import {
+  FilterIcon,
+  SortByDate,
+  SortDownIcon,
+  SortUpIcon,
+} from "../Widgets/Icons";
+import { isSameDay, isSameMonth, isSameYear } from "date-fns";
 
 type TransactionsProps = { transactions: Transaction[] };
 
 export default function Transactions({ transactions }: TransactionsProps) {
   const [filterModal, setFilterModal] = useState(false);
-  const [activeTab, setActiveTab] = useState<"mounth" | "day" | "year">(
-    "mounth"
-  );
 
-  const [filter, setFilter] = useState<"day" | "month" | "year" | "all">("all");
+  const [filter, setFilter] = useState<"day" | "month" | "year" | "all">(
+    "month"
+  );
   const [type, setType] = useState<"all" | "expense" | "income">("all");
+  const [sortOrder, setSortOrder] = useState<"none" | "asc" | "desc">("none");
 
   const today = new Date();
 
@@ -29,7 +34,8 @@ export default function Transactions({ transactions }: TransactionsProps) {
     if (filter === "year") {
       return isSameYear(transaction.date, today);
     }
-    return true; // Если "all", возвращаем все
+
+    return true;
   });
 
   // Фильтрация по типу транзакции
@@ -40,8 +46,30 @@ export default function Transactions({ transactions }: TransactionsProps) {
     if (type === "income") {
       return transaction.transactionType === "income";
     }
-    return true; // Если "all", возвращаем все
+    return true;
   });
+
+  // Сортировка
+  const sortedTransactions = [...filteredByType].sort((a, b) => {
+    if (sortOrder === "asc") {
+      return a.amount - b.amount; // Сортировка по возрастанию
+    }
+    if (sortOrder === "desc") {
+      return b.amount - a.amount; // Сортировка по убыванию
+    }
+    return new Date(b.date).getTime() - new Date(a.date).getTime(); // Исходная сортировка по дате
+  });
+
+  // Функция для переключения сортировки
+  const toggleSortOrder = () => {
+    if (sortOrder === "none") {
+      setSortOrder("desc"); // Переключаем на убывание
+    } else if (sortOrder === "desc") {
+      setSortOrder("asc"); // Переключаем на возрастание
+    } else {
+      setSortOrder("none"); // Сбрасываем к сортировке по дате
+    }
+  };
 
   return (
     <>
@@ -51,44 +79,44 @@ export default function Transactions({ transactions }: TransactionsProps) {
           setModal={setFilterModal}
           node={
             <>
-              <div className="flex gap-2">
+              <p>По дате</p>
+              <div className="mt-1 flex gap-2">
                 <button
-                  onClick={() => {
-                    setFilterModal(false);
-                    setActiveTab("day");
-                  }}
-                  className={`${
-                    activeTab === "day" && "bg-neutral-100 text-neutral-800"
-                  } w-full rounded-lg p-2 text-neutral-500 hover:bg-neutral-200 hover:text-neutral-800 transition-all`}
+                  onClick={() => setFilter("all")}
+                  className={`btn_2 ${
+                    filter === "all" ? "ring-2 ring-neutral-500" : ""
+                  }`}
+                >
+                  Все
+                </button>
+                <button
+                  onClick={() => setFilter("day")}
+                  className={`btn_2 ${
+                    filter === "day" ? "ring-2 ring-neutral-500" : ""
+                  }`}
                 >
                   Сегодня
                 </button>
                 <button
-                  onClick={() => {
-                    setFilterModal(false);
-                    setActiveTab("mounth");
-                  }}
-                  className={`${
-                    activeTab === "mounth" && "bg-neutral-100 text-neutral-800"
-                  } w-full rounded-lg p-2 text-neutral-500 hover:bg-neutral-200 hover:text-neutral-800 transition-all`}
+                  onClick={() => setFilter("month")}
+                  className={`btn_2 ${
+                    filter === "month" ? "ring-2 ring-neutral-500" : ""
+                  }`}
                 >
-                  За месяц
+                  Месяц
                 </button>
                 <button
-                  onClick={() => {
-                    setFilterModal(false);
-                    setActiveTab("year");
-                  }}
-                  className={`${
-                    activeTab === "year" && "bg-neutral-100 text-neutral-800"
-                  } w-full rounded-lg p-2 text-neutral-500 hover:bg-neutral-200 hover:text-neutral-800 transition-all`}
+                  onClick={() => setFilter("year")}
+                  className={`btn_2 ${
+                    filter === "year" ? "ring-2 ring-neutral-500" : ""
+                  }`}
                 >
-                  За год
+                  Год
                 </button>
               </div>
 
-              {/* Фильтр по типу транзакции */}
-              <div className="flex gap-2 mt-4">
+              <p className="mt-4">По типу транзакции</p>
+              <div className="mt-1 flex gap-2">
                 <button
                   onClick={() => {
                     setFilterModal(false);
@@ -129,18 +157,31 @@ export default function Transactions({ transactions }: TransactionsProps) {
       )}
 
       <section className="w-full">
-        <div className="flex justify-between items-start">
+        <div className="flex justify-between items-center">
           <h3>Транзакции</h3>
 
           <div className="flex gap-4">
-            <button onClick={() => setFilterModal(true)}>
+            <button
+              className="btn_1 flex justify-center items-center"
+              onClick={() => setFilterModal(true)}
+            >
               <FilterIcon />
             </button>
+            {sortedTransactions.length > 0 && (
+              <button
+                className="btn_1 flex justify-center items-center"
+                onClick={toggleSortOrder}
+              >
+                {sortOrder === "none" && <SortByDate />}
+                {sortOrder === "asc" && <SortUpIcon />}
+                {sortOrder === "desc" && <SortDownIcon />}
+              </button>
+            )}
           </div>
         </div>
         {transactions.length > 0 ? (
           <div className="mt-2 bg-white shadow-lg rounded-lg max-h-[680px] overflow-y-auto">
-            {filteredByType.map((transaction) => (
+            {sortedTransactions.map((transaction) => (
               <TransactionCard key={transaction.id} transaction={transaction} />
             ))}
           </div>
