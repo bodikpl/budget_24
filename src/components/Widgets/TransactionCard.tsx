@@ -71,11 +71,11 @@ export default function TransactionCard({ transaction }: TransactionCardProps) {
             </p>
           </div>
 
-          <div className="flex gap-4 justify-between text-sm text-neutral-500">
+          <div className="flex gap-4 justify-between text-sm text-neutral-500 dark:text-neutral-400">
             <p>{transaction.category}</p>
             <p
               style={{ backgroundColor: transactionAccount.color }}
-              className="whitespace-nowrap text-white px-1.5 rounded-md"
+              className="whitespace-nowrap text-white dark:text-neutral-100 px-1.5 rounded-md"
             >
               {transactionAccount.title}, {transaction.currency}
             </p>

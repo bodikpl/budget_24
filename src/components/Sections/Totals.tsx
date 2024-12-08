@@ -58,7 +58,7 @@ export default function Totals({ transactions }: TotalsProps) {
         />
       )}
 
-      <section className="bg-white dark:bg-neutral-600 dark:text-white shadow-lg p-2 rounded-xl flex gap-2">
+      <section className="bg-white dark:bg-neutral-800 dark:text-white shadow-lg p-2 rounded-xl flex gap-2">
         <TotalCard
           title="Доходы"
           color="#dcfce7"
