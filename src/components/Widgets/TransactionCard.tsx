@@ -1,9 +1,9 @@
 import { useState } from "react";
+import { useLocalStorage } from "usehooks-ts";
 import Modal from "./Modal";
 import TransactionModalContent from "../ModalContents/TransactionModalContent";
 import { Account, Transaction } from "../../lib/types";
 import { getFormattedDate } from "../../lib/fn";
-import { useLocalStorage } from "usehooks-ts";
 
 type TransactionCardProps = { transaction: Transaction };
 

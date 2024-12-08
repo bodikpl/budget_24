@@ -6,6 +6,7 @@ import Modal from "../Widgets/Modal";
 import AccountSelect from "../Selects/AccountSelect";
 import { EXPENSES_CATEGORIES, INCOME_CATEGORIES } from "../../lib/data";
 import CategoriesSelect from "../Selects/CategoriesSelect";
+import Alert from "../Widgets/Alert";
 
 type TransactionModalContentProps = {
   transactionType: "income" | "expense";
@@ -99,8 +100,21 @@ export default function TransactionModalContent({
     setLocalTransactions(filteredLocalTransactions);
   };
 
+  const [deleteAlert, setDeleteAlert] = useState(false);
+
   return (
     <>
+      {deleteAlert && (
+        <Alert
+          title="Удаление транзакции"
+          dascription="Вы действительно хотите удалить транзакцию?"
+          onClose={() => setDeleteAlert(false)}
+          onConfirm={() => {
+            setModal(false);
+            transaction && handleDeleteTransaction(transaction.id);
+          }}
+        />
+      )}
       {accountSelectModal && (
         <Modal
           title="Счета"
@@ -171,10 +185,7 @@ export default function TransactionModalContent({
           {editMode && (
             <button
               className="bg-black/5 aspect-square px-4 h-10 rounded-lg leading-none transition-colors hover:bg-black/10 disabled:hidden border border-[#EA4335] text-[#EA4335]"
-              onClick={() => {
-                setModal(false);
-                transaction && handleDeleteTransaction(transaction.id);
-              }}
+              onClick={() => setDeleteAlert(true)}
               // disabled={!title || !selectedCurrency}
             >
               Удалить

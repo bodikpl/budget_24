@@ -108,8 +108,10 @@ export default function Head() {
     : 0;
 
   const formattedExpenses =
-    expenses.filter((expense) => expense.currency === localMainCurrency)[0]
-      .total * -1;
+    expenses.length > 0
+      ? expenses.filter((expense) => expense.currency === localMainCurrency)[0]
+          .total * -1
+      : 0;
 
   return (
     <>

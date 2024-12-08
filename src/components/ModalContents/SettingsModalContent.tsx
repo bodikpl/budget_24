@@ -8,6 +8,7 @@ import { useLocalStorage } from "usehooks-ts";
 import { Currency } from "../../lib/types";
 import Modal from "../Widgets/Modal";
 import CategoriesSelect from "../Selects/CategoriesSelect";
+import Alert from "../Widgets/Alert";
 
 type SettingsModalContentProps = {
   setModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -56,8 +57,36 @@ export default function SettingsModalContent({
   const [incomeCategoriesModal, setIncomeCategoriesModal] = useState(false);
   const [expenseCategoriesModal, setExpensesCategoriesModal] = useState(false);
 
+  const [deleteAllAlert, setDeleteAllAlert] = useState(false);
+  const [changeCurrencyAlert, setChangeCurrencyAlert] = useState(false);
+
+  const [currencyForSelect, setCurrencyForSalect] = useState("");
+
   return (
     <>
+      {deleteAllAlert && (
+        <Alert
+          title="Удалить всё"
+          dascription="Вы действительно хотите удалить всё?"
+          onClose={() => setDeleteAllAlert(false)}
+          onConfirm={() => {
+            localStorage.clear();
+            location.reload();
+          }}
+        />
+      )}
+      {changeCurrencyAlert && (
+        <Alert
+          title="Изменение основной валюты"
+          dascription="Вы действительно хотите изменить основную валюту? Курсы оставшихся валют нужно будет настроить заново!"
+          onClose={() => setChangeCurrencyAlert(false)}
+          onConfirm={() => {
+            handleCurrencySelection(currencyForSelect);
+            setChangeCurrencyAlert(false);
+          }}
+        />
+      )}
+
       {incomeCategoriesModal && (
         <Modal
           title="Категории доходов"
@@ -98,7 +127,14 @@ export default function SettingsModalContent({
             className={`${
               mainCurrency === title ? "ring-2 ring-neutral-500" : ""
             } btn_2`}
-            onClick={() => handleCurrencySelection(title)}
+            onClick={() => {
+              if (!localMainCurrency) {
+                handleCurrencySelection(title);
+              } else {
+                setChangeCurrencyAlert(true);
+                setCurrencyForSalect(title);
+              }
+            }}
           >
             {title}
           </button>
@@ -148,10 +184,7 @@ export default function SettingsModalContent({
       <div className="mt-1 grid grid-cols-2 gap-4">
         <button
           className="btn_2 border border-[#EA4335] text-[#EA4335]"
-          onClick={() => {
-            localStorage.clear();
-            location.reload();
-          }}
+          onClick={() => setDeleteAllAlert(true)}
         >
           Удалить все
         </button>

@@ -3,6 +3,7 @@ import { COLORS, CURRENCY } from "../../lib/data";
 import { useState } from "react";
 import { Account } from "../../lib/types";
 import { v4 as uuidv4 } from "uuid";
+import Alert from "../Widgets/Alert";
 
 type AccountModalContentProps = {
   setModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -65,10 +66,23 @@ export default function AccountModalContent({
     setLocalAccounts(filteredLocalAccounts);
   };
 
+  const [deleteAlert, setDeleteAlert] = useState(false);
+
   return (
     <>
       {localMainCurrency ? (
         <>
+          {deleteAlert && (
+            <Alert
+              title="Удаление счета"
+              dascription="Вы действительно хотите удалить счет?"
+              onClose={() => setDeleteAlert(false)}
+              onConfirm={() => {
+                setModal(false);
+                account && handleDeleteAccount(account.id);
+              }}
+            />
+          )}
           <h3>Название счета</h3>
           <input
             type="text"
@@ -120,10 +134,7 @@ export default function AccountModalContent({
             {editMode && (
               <button
                 className="bg-black/5 aspect-square px-4 h-10 rounded-lg leading-none transition-colors hover:bg-black/10 disabled:hidden border border-[#EA4335] text-[#EA4335]"
-                onClick={() => {
-                  setModal(false);
-                  account && handleDeleteAccount(account.id);
-                }}
+                onClick={() => setDeleteAlert(true)}
                 disabled={!title || !selectedCurrency}
               >
                 Удалить
