@@ -82,7 +82,7 @@ export default function Calendar({
               isSameDay(day, today) && "text-lg bg-neutral-100"
             } rounded-full shrink-0 aspect-square flex items-center justify-center cursor-pointer leading-none m-px ${
               isSameDay(day, selected ?? new Date())
-                ? cn("bg-[#EA4335] text-white")
+                ? cn("ring-2 ring-[#EA4335]/80 bg-[#EA4335]/20")
                 : !isSameMonth(day, monthStart) && "text-gray-400"
             }`}
             onClick={() => onDateClick(cloneDay)}
