@@ -4,6 +4,7 @@ import Modal from "./Modal";
 import TransactionModalContent from "../ModalContents/TransactionModalContent";
 import { Account, Transaction } from "../../lib/types";
 import { getFormattedDates } from "../../lib/fn";
+import { ExpenseIcon, IncomeIcon } from "./Icons";
 
 type TransactionCardProps = { transaction: Transaction };
 
@@ -45,7 +46,11 @@ export default function TransactionCard({ transaction }: TransactionCardProps) {
               : "bg-[#fee2e2]"
           } aspect-square w-10 h-10 rounded-full text-3xl leading-none flex justify-center items-center `}
         >
-          +
+          {transaction.transactionType === "income" ? (
+            <IncomeIcon />
+          ) : (
+            <ExpenseIcon />
+          )}
         </div>
 
         <div className="w-full ml-4 flex flex-col justify-center">
@@ -62,7 +67,7 @@ export default function TransactionCard({ transaction }: TransactionCardProps) {
               <span className="text-xs">{transaction.currency}</span>
             </p>
           </div>
-          <div className="flex gap-4 justify-between text-xs text-neutral-500">
+          <div className="flex gap-4 justify-between text-sm text-neutral-500">
             <p>{transaction.description}</p>
             <p className="whitespace-nowrap font-aptosSemiBold">
               {transactionAccount.title}, {transaction.currency}

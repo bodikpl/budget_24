@@ -20,6 +20,9 @@ export default function Transactions({ transactions }: TransactionsProps) {
   );
   const [type, setType] = useState<"all" | "expense" | "income">("all");
   const [sortOrder, setSortOrder] = useState<"none" | "asc" | "desc">("none");
+  const [selectedCategory, setSelectedCategory] = useState<string | "all">(
+    "all"
+  );
 
   const today = new Date();
 
@@ -34,7 +37,6 @@ export default function Transactions({ transactions }: TransactionsProps) {
     if (filter === "year") {
       return isSameYear(transaction.date, today);
     }
-
     return true;
   });
 
@@ -49,25 +51,47 @@ export default function Transactions({ transactions }: TransactionsProps) {
     return true;
   });
 
-  // Сортировка
-  const sortedTransactions = [...filteredByType].sort((a, b) => {
+  // Фильтрация по категории
+  const filteredByCategory = filteredByType.filter((transaction) => {
+    if (selectedCategory === "all") {
+      return true;
+    }
+    return transaction.category === selectedCategory;
+  });
+
+  // Расчет сумм расходов по категориям с учетом фильтров
+  const categorySums = filteredByDate.reduce((acc, transaction) => {
+    if (transaction.transactionType === "expense") {
+      acc[transaction.category] =
+        (acc[transaction.category] || 0) + transaction.amount;
+    }
+    return acc;
+  }, {} as Record<string, number>);
+
+  // Сортировка категорий по суммам
+  const sortedCategories = Object.entries(categorySums).sort(
+    (a, b) => b[1] - a[1]
+  );
+
+  // Сортировка транзакций
+  const sortedTransactions = [...filteredByCategory].sort((a, b) => {
     if (sortOrder === "asc") {
-      return a.amount - b.amount; // Сортировка по возрастанию
+      return a.amount - b.amount;
     }
     if (sortOrder === "desc") {
-      return b.amount - a.amount; // Сортировка по убыванию
+      return b.amount - a.amount;
     }
-    return new Date(b.date).getTime() - new Date(a.date).getTime(); // Исходная сортировка по дате
+    return new Date(b.date).getTime() - new Date(a.date).getTime();
   });
 
   // Функция для переключения сортировки
   const toggleSortOrder = () => {
     if (sortOrder === "none") {
-      setSortOrder("desc"); // Переключаем на убывание
+      setSortOrder("desc");
     } else if (sortOrder === "desc") {
-      setSortOrder("asc"); // Переключаем на возрастание
+      setSortOrder("asc");
     } else {
-      setSortOrder("none"); // Сбрасываем к сортировке по дате
+      setSortOrder("none");
     }
   };
 
@@ -150,6 +174,37 @@ export default function Transactions({ transactions }: TransactionsProps) {
                 >
                   Доходы
                 </button>
+              </div>
+
+              <p className="mt-4">По категориям (суммы расходов)</p>
+              <div className="mt-1 grid grid-cols-2 gap-2">
+                <button
+                  onClick={() => {
+                    setFilterModal(false);
+                    setSelectedCategory("all");
+                  }}
+                  className={`btn_2 ${
+                    selectedCategory === "all" ? "ring-2 ring-neutral-500" : ""
+                  }`}
+                >
+                  Все
+                </button>
+                {sortedCategories.map(([category, sum]) => (
+                  <button
+                    key={category}
+                    onClick={() => {
+                      setFilterModal(false);
+                      setSelectedCategory(category);
+                    }}
+                    className={`btn_2 ${
+                      selectedCategory === category
+                        ? "ring-2 ring-neutral-500"
+                        : ""
+                    }`}
+                  >
+                    {category}, {sum.toFixed(2)} ₽
+                  </button>
+                ))}
               </div>
             </>
           }
