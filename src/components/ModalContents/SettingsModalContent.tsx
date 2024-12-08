@@ -3,6 +3,7 @@ import { useLocalStorage } from "usehooks-ts";
 import { CURRENCY } from "../../lib/data";
 import { Currency } from "../../lib/types";
 import Alert from "../Widgets/Alert";
+import ThemeToggleButton from "../Widgets/ThemeToggleButton";
 
 type SettingsModalContentProps = {
   setModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -116,7 +117,7 @@ export default function SettingsModalContent({
                   <p className="w-1/2">{title}</p>
                   <input
                     type="number"
-                    className="w-full py-1 bg-neutral-100 rounded-lg text-center"
+                    className="input"
                     value={tempExchangeRates[id] ?? exchangeRate.toString()} // Показываем временное значение или число
                     onChange={(e) =>
                       handleExchangeRateChange(id, e.target.value)
@@ -144,9 +145,11 @@ export default function SettingsModalContent({
         </button>
       </div>
 
+      <ThemeToggleButton />
+
       {mainCurrency && (
         <button
-          className="mt-4 ml-auto block bg-black/5 aspect-square px-4 h-10 rounded-lg leading-none transition-colors hover:bg-black/10 disabled:hidden"
+          className="mt-4 ml-auto block bg-black/5 aspect-square px-4 h-10 rounded-lg leading-none transition-colors hover:bg-black/10 disabled:hidden dark:bg-black dark:text-white"
           onClick={() => setModal(false)}
           disabled={!mainCurrency}
         >

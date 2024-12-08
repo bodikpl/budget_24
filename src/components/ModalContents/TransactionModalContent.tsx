@@ -181,7 +181,7 @@ export default function TransactionModalContent({
           value={amount}
           autoFocus
           placeholder="Сумма"
-          className="btn_2 !w-1/3 text-center text-lg border-2 border-neutral-500 placeholder:text-neutral-500"
+          className="input text-lg !w-1/3"
           onChange={(e) => setAmount(e.target.value)}
         />
       </div>
@@ -205,7 +205,7 @@ export default function TransactionModalContent({
         type="text"
         value={description}
         placeholder="Описание (опционально)"
-        className="mt-4 p-4 bg-yellow-50 w-full rounded-lg placeholder:text-neutral-500"
+        className="mt-4 p-4 bg-yellow-50 dark:bg-yellow-300/10 dark:placeholder:text-neutral-200 w-full rounded-lg placeholder:text-neutral-500"
         onChange={(e) => setDescription(e.target.value)}
       />
 
@@ -213,7 +213,7 @@ export default function TransactionModalContent({
         <div className="flex gap-4 justify-end">
           {editMode && (
             <button
-              className="bg-black/5 aspect-square px-4 h-10 rounded-lg leading-none transition-colors hover:bg-black/10 disabled:hidden border border-[#EA4335] text-[#EA4335]"
+              className="btn_2 border border-[#EA4335] text-[#EA4335]"
               onClick={() => setDeleteAlert(true)}
               // disabled={!title || !selectedCurrency}
             >
@@ -221,7 +221,7 @@ export default function TransactionModalContent({
             </button>
           )}
           <button
-            className="bg-black/5 aspect-square px-4 h-10 rounded-lg leading-none transition-colors hover:bg-black/10 disabled:hidden"
+            className="btn_2"
             onClick={() => {
               setModal(false);
               handleSaveTransaction();

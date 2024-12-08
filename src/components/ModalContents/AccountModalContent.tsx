@@ -83,14 +83,30 @@ export default function AccountModalContent({
               }}
             />
           )}
-          <h3>Название счета</h3>
-          <input
-            type="text"
-            placeholder="Название банка, Наличные итд"
-            className="w-full text-lg"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
+
+          <div className="flex gap-2 items-end">
+            <div className="w-3/4">
+              <h3>Название счета</h3>
+              <input
+                type="text"
+                placeholder="Название банка, наличные..."
+                className="input text-lg mt-1"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+              />
+            </div>
+
+            <div>
+              <p>Начальный баланс</p>
+              <input
+                type="number"
+                placeholder="Укажите, если нужно"
+                className="input text-lg mt-1"
+                value={initialBalance}
+                onChange={(e) => setInitialBalance(e.target.value)}
+              />
+            </div>
+          </div>
 
           <p className="mt-4">Валюта счета</p>
           <div className="mt-1 grid grid-cols-4 gap-4">
@@ -106,15 +122,6 @@ export default function AccountModalContent({
               </button>
             ))}
           </div>
-
-          <p className="mt-4">Начальный баланс</p>
-          <input
-            type="number"
-            placeholder="Укажите, если нужно"
-            className="w-full"
-            value={initialBalance}
-            onChange={(e) => setInitialBalance(e.target.value)}
-          />
 
           <p className="mt-4">Цвет</p>
           <div className="mt-1 flex justify-between">
@@ -133,7 +140,7 @@ export default function AccountModalContent({
           <div className="mt-6 flex gap-4 justify-end">
             {editMode && (
               <button
-                className="bg-black/5 aspect-square px-4 h-10 rounded-lg leading-none transition-colors hover:bg-black/10 disabled:hidden border border-[#EA4335] text-[#EA4335]"
+                className="btn_2 border border-[#EA4335] text-[#EA4335]"
                 onClick={() => setDeleteAlert(true)}
                 disabled={!title || !selectedCurrency}
               >
@@ -141,7 +148,7 @@ export default function AccountModalContent({
               </button>
             )}
             <button
-              className="bg-black/5 aspect-square px-4 h-10 rounded-lg leading-none transition-colors hover:bg-black/10 disabled:hidden"
+              className="btn_2"
               onClick={handleSaveAccount}
               disabled={!title || !selectedCurrency}
             >

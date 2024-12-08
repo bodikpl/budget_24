@@ -14,6 +14,7 @@ function App() {
   );
   const [localAccounts] = useLocalStorage<Account[]>("localAccounts", []);
   const isOnline = useCheckConnection();
+
   return (
     <>
       {!isOnline && <p className="fixed left-4 top-0 text-xs">Нет сети</p>}

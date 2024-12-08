@@ -22,7 +22,7 @@ export default function BudgetModalContent({
       <input
         type="number"
         placeholder="Введите планируемую сумму"
-        className="w-full"
+        className="w-full dark:bg-transparent dark:text-white"
         value={localBudget === 0 ? "" : localBudget}
         onChange={(e) => handleBudgetChange(e.target.value)}
       />

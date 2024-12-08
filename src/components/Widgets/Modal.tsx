@@ -11,11 +11,14 @@ export default function Modal({ title, setModal, node, subModal }: ModalProps) {
       <div
         className={`${
           subModal && "mt-2 mx-2"
-        } bg-white p-4 rounded-xl max-w-lg mx-auto`}
+        } bg-white dark:bg-neutral-800 dark:ring-2 dark:ring-neutral-700 dark:text-white p-4 rounded-xl max-w-lg mx-auto`}
       >
         <div className="flex gap-4 justify-between items-start">
           <h3>{title}</h3>
-          <button className="btn_1 rotate-45" onClick={() => setModal(false)}>
+          <button
+            className="btn_1 dark:!bg-black rotate-45"
+            onClick={() => setModal(false)}
+          >
             +
           </button>
         </div>

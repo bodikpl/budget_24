@@ -147,7 +147,7 @@ export default function Head() {
         <div className="flex gap-4 items-center">
           <button
             onClick={() => setSettingsModal(true)}
-            className="rounded-full bg-black text-white font-aptosSemiBold aspect-square w-10 h-10 flex items-center justify-center"
+            className="rounded-full bg-black text-white dark:bg-neutral-600 font-aptosSemiBold aspect-square w-10 h-10 flex items-center justify-center"
           >
             BS
           </button>

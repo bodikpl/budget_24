@@ -16,7 +16,7 @@ function TotalCard({
   return (
     <div
       style={{ backgroundColor: color }}
-      className="rounded-lg p-3 pb-2 w-full flex justify-between items-start relative"
+      className="rounded-lg p-3 pb-2 w-full flex justify-between items-start relative dark:text-black dark:saturate-[900%]"
     >
       <div>
         <p className="font-aptosSemiBold text-sm">{title}</p>

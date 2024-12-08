@@ -175,7 +175,7 @@ export default function Transactions({ transactions }: TransactionsProps) {
           </div>
         </div>
         {transactions.length > 0 ? (
-          <div className="mt-2 bg-white shadow-lg rounded-lg">
+          <div className="mt-2 bg-white dark:bg-neutral-800 shadow-lg rounded-lg">
             {sortedTransactions.map((transaction) => (
               <TransactionCard key={transaction.id} transaction={transaction} />
             ))}
