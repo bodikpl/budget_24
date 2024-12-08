@@ -159,21 +159,32 @@ export default function TransactionModalContent({
         />
       )}
 
-      <button
-        style={{
-          backgroundColor: selectedAccount
-            ? localAccounts.filter((acc) => acc.id === selectedAccount.id)[0]
-                .color
-            : "#F2F2F2",
-          color: selectedAccount ? "white" : "black",
-        }}
-        className="btn_2"
-        onClick={() => setAccountSelectModal(true)}
-      >
-        {selectedAccount
-          ? `${selectedAccount.title}, ${selectedAccount.currency}`
-          : "Выберите счет"}
-      </button>
+      <div className="flex gap-4">
+        <button
+          style={{
+            backgroundColor: selectedAccount
+              ? localAccounts.filter((acc) => acc.id === selectedAccount.id)[0]
+                  .color
+              : "#F2F2F2",
+            color: selectedAccount ? "white" : "black",
+          }}
+          className="btn_2 !w-2/3"
+          onClick={() => setAccountSelectModal(true)}
+        >
+          {selectedAccount
+            ? `${selectedAccount.title}, ${selectedAccount.currency}`
+            : "Выберите счет"}
+        </button>
+
+        <input
+          type="number"
+          value={amount}
+          autoFocus
+          placeholder="Сумма"
+          className="btn_2 !w-1/3 text-center text-lg border-2 border-neutral-500 placeholder:text-neutral-500"
+          onChange={(e) => setAmount(e.target.value)}
+        />
+      </div>
 
       <div className="mt-4 flex gap-4">
         <div className="w-full">
@@ -194,19 +205,11 @@ export default function TransactionModalContent({
         type="text"
         value={description}
         placeholder="Описание (опционально)"
-        className="mt-4 btn_2"
+        className="mt-4 p-4 bg-yellow-50 w-full rounded-lg placeholder:text-neutral-500"
         onChange={(e) => setDescription(e.target.value)}
       />
 
-      <div className="mt-4 flex gap-4 justify-between">
-        <input
-          type="number"
-          value={amount}
-          autoFocus
-          placeholder="Введите сумму"
-          className="btn_2 !w-1/2 text-center text-lg"
-          onChange={(e) => setAmount(e.target.value)}
-        />
+      <div className="mt-4 flex gap-4 justify-end">
         <div className="flex gap-4 justify-end">
           {editMode && (
             <button
