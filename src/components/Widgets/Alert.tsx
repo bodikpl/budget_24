@@ -12,7 +12,7 @@ export default function Alert({
   onConfirm,
 }: ModalProps) {
   return (
-    <div className="fixed flex items-center p-4 bg-black/50 backdrop-blur inset-0 z-10">
+    <div className="fixed flex items-center p-6 bg-black/50 backdrop-blur inset-0 z-10">
       <div className="bg-white dark:bg-neutral-700 dark:text-white p-4 rounded-xl max-w-lg mx-auto">
         <h3 className="text-center">{title}</h3>
         <p className="mt-2 text-neutral-500 dark:text-neutral-200 text-center">

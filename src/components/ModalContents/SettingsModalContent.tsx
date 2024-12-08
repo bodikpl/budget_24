@@ -4,6 +4,8 @@ import { CURRENCY } from "../../lib/data";
 import { Currency } from "../../lib/types";
 import Alert from "../Widgets/Alert";
 import ThemeToggleButton from "../Widgets/ThemeToggleButton";
+import Modal from "../Widgets/Modal";
+import SyncModalContent from "./SyncModalContent";
 
 type SettingsModalContentProps = {
   setModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -50,12 +52,32 @@ export default function SettingsModalContent({
   };
 
   const [deleteAllAlert, setDeleteAllAlert] = useState(false);
+
   const [changeCurrencyAlert, setChangeCurrencyAlert] = useState(false);
 
   const [currencyForSelect, setCurrencyForSalect] = useState("");
 
+  const [passwordModal, setPasswordModal] = useState(false);
+  const [syncModal, setSyncModal] = useState(false);
+  const [password, setPassword] = useState("");
+
+  const onSubmit = (text: string) => {
+    if (text === import.meta.env.VITE_API_USER_PASSWORD) {
+      setPassword("");
+      setPasswordModal(false);
+      setSyncModal(true);
+    }
+  };
+
   return (
     <>
+      {syncModal && (
+        <Modal
+          title="Синхронизация"
+          setModal={setSyncModal}
+          node={<SyncModalContent setModal={setSyncModal} />}
+        />
+      )}
       {deleteAllAlert && (
         <Alert
           title="Удалить всё"
@@ -65,6 +87,28 @@ export default function SettingsModalContent({
             localStorage.clear();
             location.reload();
           }}
+        />
+      )}
+      {passwordModal && (
+        <Modal
+          title="Введите пароль"
+          setModal={setPasswordModal}
+          node={
+            <div>
+              <input
+                type="password"
+                className="input"
+                value={password}
+                autoFocus={true}
+                placeholder="Ввести пароль"
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <button className="btn_2 mt-4" onClick={() => onSubmit(password)}>
+                Подтвердить
+              </button>
+            </div>
+          }
+          subModal={true}
         />
       )}
       {changeCurrencyAlert && (
@@ -137,10 +181,7 @@ export default function SettingsModalContent({
         >
           Удалить все
         </button>
-        <button
-          className="btn_2"
-          // onClick={() => setExpensesCategoriesModal(true)}
-        >
+        <button className="btn_2" onClick={() => setPasswordModal(true)}>
           Синхронизация
         </button>
       </div>
