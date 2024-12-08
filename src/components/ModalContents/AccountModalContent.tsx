@@ -45,7 +45,7 @@ export default function AccountModalContent({
 
     // Проверяем, есть ли уже аккаунт с таким названием
     const existingAccountIndex = localAccounts.findIndex(
-      (acc) => acc.id === acc.id
+      (acc) => acc.id === newAccount.id
     );
 
     if (existingAccountIndex > -1) {
