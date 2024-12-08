@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Modal from "../Widgets/Modal";
 import TransactionCard from "../Widgets/TransactionCard";
-import { Transaction } from "../../lib/types";
+import { Currency, Transaction } from "../../lib/types";
 import {
   FilterIcon,
   SortByDate,
@@ -9,6 +9,7 @@ import {
   SortUpIcon,
 } from "../Widgets/Icons";
 import { isSameDay, isSameMonth, isSameYear } from "date-fns";
+import { useLocalStorage } from "usehooks-ts";
 
 type TransactionsProps = { transactions: Transaction[] };
 
@@ -25,6 +26,15 @@ export default function Transactions({ transactions }: TransactionsProps) {
   );
 
   const today = new Date();
+
+  const [localCurrency] = useLocalStorage<Currency[]>("localCurrency", []);
+  const [localMainCurrency] = useLocalStorage<string>("localMainCurrency", "");
+
+  // Функция для получения курса валюты по ее названию
+  const getExchangeRate = (currencyTitle: string) => {
+    const currency = localCurrency.find((c) => c.title === currencyTitle);
+    return currency ? currency.exchangeRate : 1; // Если курс не найден, считаем, что это 1
+  };
 
   // Фильтрация по дате
   const filteredByDate = transactions.filter((transaction) => {
@@ -59,18 +69,20 @@ export default function Transactions({ transactions }: TransactionsProps) {
     return transaction.category === selectedCategory;
   });
 
-  // Расчет сумм расходов по категориям с учетом фильтров
+  // Расчет сумм расходов по категориям с учетом курса валют
   const categorySums = filteredByDate.reduce((acc, transaction) => {
     if (transaction.transactionType === "expense") {
+      const exchangeRate = getExchangeRate(transaction.currency); // Получаем курс валюты для текущей транзакции
+      const amountInBaseCurrency = transaction.amount * exchangeRate; // Переводим сумму в основную валюту
       acc[transaction.category] =
-        (acc[transaction.category] || 0) + transaction.amount;
+        (acc[transaction.category] || 0) + amountInBaseCurrency;
     }
     return acc;
   }, {} as Record<string, number>);
 
   // Сортировка категорий по суммам
   const sortedCategories = Object.entries(categorySums).sort(
-    (a, b) => b[1] - a[1]
+    (a, b) => b[1] - a[1] // Сортировка по убыванию
   );
 
   // Сортировка транзакций
@@ -177,7 +189,7 @@ export default function Transactions({ transactions }: TransactionsProps) {
               </div>
 
               <p className="mt-4">По категориям (суммы расходов)</p>
-              <div className="mt-1 grid grid-cols-2 gap-2">
+              <div className="mt-1 flex flex-col gap-2">
                 <button
                   onClick={() => {
                     setFilterModal(false);
@@ -196,13 +208,13 @@ export default function Transactions({ transactions }: TransactionsProps) {
                       setFilterModal(false);
                       setSelectedCategory(category);
                     }}
-                    className={`btn_2 ${
+                    className={`btn_2 whitespace-nowrap ${
                       selectedCategory === category
                         ? "ring-2 ring-neutral-500"
                         : ""
                     }`}
                   >
-                    {category}, {sum.toFixed(2)} ₽
+                    {category}, {sum.toFixed(2)}, {localMainCurrency}
                   </button>
                 ))}
               </div>
@@ -216,12 +228,6 @@ export default function Transactions({ transactions }: TransactionsProps) {
           <h3>Транзакции</h3>
 
           <div className="flex gap-4">
-            <button
-              className="btn_1 flex justify-center items-center"
-              onClick={() => setFilterModal(true)}
-            >
-              <FilterIcon />
-            </button>
             {sortedTransactions.length > 0 && (
               <button
                 className="btn_1 flex justify-center items-center"
@@ -232,6 +238,13 @@ export default function Transactions({ transactions }: TransactionsProps) {
                 {sortOrder === "desc" && <SortDownIcon />}
               </button>
             )}
+
+            <button
+              className="btn_1 flex justify-center items-center"
+              onClick={() => setFilterModal(true)}
+            >
+              <FilterIcon />
+            </button>
           </div>
         </div>
         {transactions.length > 0 ? (
