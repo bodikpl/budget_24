@@ -45,7 +45,7 @@ export default function AccountModalContent({
 
     // Проверяем, есть ли уже аккаунт с таким названием
     const existingAccountIndex = localAccounts.findIndex(
-      (account) => account.title === title
+      (acc) => acc.id === acc.id
     );
 
     if (existingAccountIndex > -1) {
@@ -89,7 +89,7 @@ export default function AccountModalContent({
               <h3>Название счета</h3>
               <input
                 type="text"
-                placeholder="Название банка, наличные..."
+                placeholder="Название"
                 className="input text-lg mt-1"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
@@ -100,7 +100,7 @@ export default function AccountModalContent({
               <p>Начальный баланс</p>
               <input
                 type="number"
-                placeholder="Укажите, если нужно"
+                placeholder="Сумма"
                 className="input text-lg mt-1"
                 value={initialBalance}
                 onChange={(e) => setInitialBalance(e.target.value)}
