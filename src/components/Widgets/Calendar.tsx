@@ -37,7 +37,7 @@ export default function Calendar({
         >
           <ChewronLeftIcon />
         </button>
-        <div className="font-aptosSemiBold capitalize text-lh">
+        <div className="font-aptosSemiBold capitalize text-lg">
           {format(currentMonth, "LLLL yyyy", { locale: ru })}
         </div>
         <button

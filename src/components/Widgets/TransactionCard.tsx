@@ -37,7 +37,7 @@ export default function TransactionCard({ transaction }: TransactionCardProps) {
 
       <div
         onClick={() => setTransactionModal(true)}
-        className="flex items-center p-3 h-[68px] overflow-hidden border-b border-neutral-200 dark:border-black last:border-none cursor-pointer"
+        className="flex items-center p-3 overflow-hidden border-b border-neutral-200 dark:border-black last:border-none cursor-pointer"
       >
         <div
           className={`${

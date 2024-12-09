@@ -181,7 +181,7 @@ export default function Transactions({ transactions }: TransactionsProps) {
             ))}
           </div>
         ) : (
-          <p className="text-neutral-500">Добавьте первый счет</p>
+          <p className="text-neutral-500">Транзакции отсутствуют</p>
         )}
       </section>
     </>
