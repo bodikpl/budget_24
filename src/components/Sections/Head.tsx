@@ -7,7 +7,7 @@ import BalanceModalContent from "../ModalContents/BalanceModalContent";
 import { Account, Balance, Currency, Transaction } from "../../lib/types";
 import { calculateSumsInCurrencies } from "../../lib/fn";
 
-export default function Head() {
+export default function Head({ theme }: { theme: string }) {
   const [settingsModal, setSettingsModal] = useState(false);
   const [budgetModal, setBudgetModal] = useState(false);
   const [balanceModal, setBalanceModal] = useState(false);
@@ -119,7 +119,9 @@ export default function Head() {
         <Modal
           title="Настройки"
           setModal={setSettingsModal}
-          node={<SettingsModalContent setModal={setSettingsModal} />}
+          node={
+            <SettingsModalContent setModal={setSettingsModal} theme={theme} />
+          }
         />
       )}
       {budgetModal && (

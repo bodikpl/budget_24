@@ -3,15 +3,17 @@ import { useLocalStorage } from "usehooks-ts";
 import { CURRENCY } from "../../lib/data";
 import { Currency } from "../../lib/types";
 import Alert from "../Widgets/Alert";
-import ThemeToggleButton from "../Widgets/ThemeToggleButton";
 import Modal from "../Widgets/Modal";
 import SyncModalContent from "./SyncModalContent";
+import ThemeToggle from "../Widgets/ThemeToggle";
 
 type SettingsModalContentProps = {
   setModal: React.Dispatch<React.SetStateAction<boolean>>;
+  theme: string;
 };
 
 export default function SettingsModalContent({
+  theme,
   setModal,
 }: SettingsModalContentProps) {
   const [localMainCurrency, setLocalMainCurrency] = useLocalStorage(
@@ -184,9 +186,9 @@ export default function SettingsModalContent({
         <button className="btn_2" onClick={() => setPasswordModal(true)}>
           Синхронизация
         </button>
-      </div>
 
-      <ThemeToggleButton />
+        <ThemeToggle theme={theme} />
+      </div>
 
       {mainCurrency && (
         <button
