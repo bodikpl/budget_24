@@ -44,7 +44,7 @@ h3 {
 }
 
 .btn_2 {
-  @apply w-full bg-black/5 aspect-square px-4 h-10 rounded-lg leading-none transition-all hover:bg-black/10 dark:bg-black dark:text-white;
+  @apply w-full bg-black/5 aspect-square px-4 h-10 rounded-lg leading-none transition-all hover:bg-black/10 dark:bg-black dark:text-white flex items-center justify-center;
 }
 
 .input {

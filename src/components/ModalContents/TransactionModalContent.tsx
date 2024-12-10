@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { useLocalStorage } from "usehooks-ts";
-import { Account, Transaction } from "../../lib/types";
+import { Account, Language, TextType, Transaction } from "../../lib/types";
 import Modal from "../Widgets/Modal";
 import AccountSelect from "../Selects/AccountSelect";
 import { EXPENSES_CATEGORIES, INCOME_CATEGORIES } from "../../lib/data";
@@ -11,6 +11,8 @@ import Calendar from "../Widgets/Calendar";
 import { getFormattedDates } from "../../lib/fn";
 
 type TransactionModalContentProps = {
+  userLanguage: Language;
+  text: TextType;
   transactionType: "income" | "expense";
   setModal: React.Dispatch<React.SetStateAction<boolean>>;
   editMode?: boolean;
@@ -18,6 +20,8 @@ type TransactionModalContentProps = {
 };
 
 export default function TransactionModalContent({
+  userLanguage,
+  text,
   transactionType,
   setModal,
   editMode,
@@ -107,14 +111,14 @@ export default function TransactionModalContent({
   };
 
   const [deleteAlert, setDeleteAlert] = useState(false);
-  const formatedSelectedDay = getFormattedDates(selectedDate);
+  const formatedSelectedDay = getFormattedDates(selectedDate, userLanguage);
 
   return (
     <>
       {deleteAlert && (
         <Alert
-          title="Удаление транзакции"
-          dascription="Вы действительно хотите удалить транзакцию?"
+          title={text.transactionDeletion[userLanguage]}
+          dascription={text.confirmTransactionDeletion[userLanguage]}
           onClose={() => setDeleteAlert(false)}
           onConfirm={() => {
             setModal(false);
@@ -124,10 +128,12 @@ export default function TransactionModalContent({
       )}
       {dateSelectModal && (
         <Modal
-          title="Счета"
+          title={text.selectDate[userLanguage]}
           setModal={setDateSelectModal}
           node={
             <Calendar
+              userLanguage={userLanguage}
+              text={text}
               selected={selectedDate}
               onDateSelect={setSelectedDate}
               setModal={setDateSelectModal}
@@ -137,16 +143,18 @@ export default function TransactionModalContent({
       )}
       {accountSelectModal && (
         <Modal
-          title="Счета"
+          title={text.accounts[userLanguage]}
           setModal={setAccountSelectModal}
           node={<AccountSelect setModal={handleAccountSelect} />}
         />
       )}
       {categoriesSelectModal && (
         <Modal
-          title={`Категории ${
-            transactionType === "income" ? "доходов" : "расходов"
-          }`}
+          title={
+            transactionType === "income"
+              ? text.incomeCategories[userLanguage]
+              : text.expenseCategories[userLanguage]
+          }
           setModal={setCategoriesSelectModal}
           node={
             <CategoriesSelect
@@ -175,14 +183,14 @@ export default function TransactionModalContent({
         >
           {selectedAccount
             ? `${selectedAccount.title}, ${selectedAccount.currency}`
-            : "Выберите счет"}
+            : text.selectAccount[userLanguage]}
         </button>
 
         <input
           type="number"
           value={amount}
           autoFocus
-          placeholder="Сумма"
+          placeholder={text.amount[userLanguage]}
           className="input text-lg !w-1/3"
           onChange={(e) => setAmount(e.target.value)}
         />
@@ -194,7 +202,7 @@ export default function TransactionModalContent({
             className="btn_2"
             onClick={() => setCategoriesSelectModal(true)}
           >
-            {selectedCategory ? selectedCategory : "Категория"}
+            {selectedCategory ? selectedCategory : text.category[userLanguage]}
           </button>
         </div>
 
@@ -206,7 +214,7 @@ export default function TransactionModalContent({
       <input
         type="text"
         value={description}
-        placeholder="Описание (опционально)"
+        placeholder={text.description[userLanguage]}
         className="mt-4 p-4 bg-yellow-50 dark:bg-yellow-300/10 dark:placeholder:text-neutral-200 w-full rounded-lg placeholder:text-neutral-500"
         onChange={(e) => setDescription(e.target.value)}
       />
@@ -219,7 +227,7 @@ export default function TransactionModalContent({
               onClick={() => setDeleteAlert(true)}
               // disabled={!title || !selectedCurrency}
             >
-              Удалить
+              {text.delete[userLanguage]}
             </button>
           )}
           <button
@@ -230,7 +238,7 @@ export default function TransactionModalContent({
             }}
             disabled={!selectedAccount || !selectedCategory || !amount}
           >
-            {editMode ? "Изменить" : "Сохранить"}
+            {editMode ? text.edit[userLanguage] : text.save[userLanguage]}
           </button>
         </div>
       </div>

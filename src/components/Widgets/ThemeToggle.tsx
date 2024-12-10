@@ -1,6 +1,17 @@
+import { Language, TextType } from "../../lib/types";
 import useTheme from "../../lib/useTheme";
 
-const ThemeToggle = ({ theme }: { theme: string }) => {
+type ThemeToggleProps = {
+  theme: string;
+  userLanguage: Language;
+  text: TextType;
+};
+
+export default function ThemeToggle({
+  theme,
+  userLanguage,
+  text,
+}: ThemeToggleProps) {
   const { toggleTheme } = useTheme();
   const handleClick = () => toggleTheme();
 
@@ -12,12 +23,10 @@ const ThemeToggle = ({ theme }: { theme: string }) => {
       className="flex gap-4 items-center"
     >
       <ThemeIcon active={theme === "dark"} />
-      <p>Сменить тему</p>
+      <p>{text.darkTheme[userLanguage]}</p>
     </button>
   );
-};
-
-export default ThemeToggle;
+}
 
 function ThemeIcon({ active = false }) {
   return (

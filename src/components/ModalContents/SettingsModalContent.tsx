@@ -1,18 +1,23 @@
 import { useState } from "react";
 import { useLocalStorage } from "usehooks-ts";
 import { CURRENCY } from "../../lib/data";
-import { Currency } from "../../lib/types";
+import { Currency, Language, TextType } from "../../lib/types";
 import Alert from "../Widgets/Alert";
 import Modal from "../Widgets/Modal";
 import SyncModalContent from "./SyncModalContent";
 import ThemeToggle from "../Widgets/ThemeToggle";
+import LanguageToogle from "../Widgets/LanguageToogle";
 
 type SettingsModalContentProps = {
+  userLanguage: Language;
+  text: TextType;
   setModal: React.Dispatch<React.SetStateAction<boolean>>;
   theme: string;
 };
 
 export default function SettingsModalContent({
+  userLanguage,
+  text,
   theme,
   setModal,
 }: SettingsModalContentProps) {
@@ -75,15 +80,15 @@ export default function SettingsModalContent({
     <>
       {syncModal && (
         <Modal
-          title="Синхронизация"
+          title={text.sync[userLanguage]}
           setModal={setSyncModal}
-          node={<SyncModalContent />}
+          node={<SyncModalContent userLanguage={userLanguage} text={text} />}
         />
       )}
       {deleteAllAlert && (
         <Alert
-          title="Удалить всё"
-          dascription="Вы действительно хотите удалить всё?"
+          title={text.deleteAll[userLanguage]}
+          dascription={text.confirmDeleteAll[userLanguage]}
           onClose={() => setDeleteAllAlert(false)}
           onConfirm={() => {
             localStorage.clear();
@@ -93,7 +98,7 @@ export default function SettingsModalContent({
       )}
       {passwordModal && (
         <Modal
-          title="Введите пароль"
+          title={text.enterPassword[userLanguage]}
           setModal={setPasswordModal}
           node={
             <div>
@@ -102,11 +107,11 @@ export default function SettingsModalContent({
                 className="input"
                 value={password}
                 autoFocus={true}
-                placeholder="Ввести пароль"
+                placeholder={text.enterPassword[userLanguage]}
                 onChange={(e) => setPassword(e.target.value)}
               />
               <button className="btn_2 mt-4" onClick={() => onSubmit(password)}>
-                Подтвердить
+                {text.confirm[userLanguage]}
               </button>
             </div>
           }
@@ -115,8 +120,8 @@ export default function SettingsModalContent({
       )}
       {changeCurrencyAlert && (
         <Alert
-          title="Изменение основной валюты"
-          dascription="Вы действительно хотите изменить основную валюту? Курсы оставшихся валют нужно будет настроить заново!"
+          title={text.changeMainCurrency[userLanguage]}
+          dascription={text.confirmChangeMainCurrency[userLanguage]}
           onClose={() => setChangeCurrencyAlert(false)}
           onConfirm={() => {
             handleCurrencySelection(currencyForSelect);
@@ -127,8 +132,8 @@ export default function SettingsModalContent({
 
       <h3>
         {mainCurrency
-          ? `Основная валюта ${mainCurrency}`
-          : "Выберите основную валюту"}
+          ? `${text.mainCurrency[userLanguage]} ${mainCurrency}`
+          : text.selectFirstPrimaryCurrency[userLanguage]}
       </h3>
 
       <div className="mt-1 grid grid-cols-4 gap-4">
@@ -154,7 +159,9 @@ export default function SettingsModalContent({
 
       {mainCurrency && (
         <>
-          <p className="mt-4 font-aptosSemiBold">Актуальный курс</p>
+          <p className="mt-4 font-aptosSemiBold">
+            {text.currentRate[userLanguage]}
+          </p>
           <div className="mt-1 grid grid-cols-3 gap-4">
             {localCurrency
               .filter((currency) => currency.title !== mainCurrency)
@@ -175,30 +182,22 @@ export default function SettingsModalContent({
         </>
       )}
 
-      <h3 className="mt-4">Данные приложения</h3>
+      <h3 className="mt-4"> {text.appData[userLanguage]}</h3>
       <div className="mt-1 grid grid-cols-2 gap-4">
         <button
           className="btn_2 border border-[#EA4335] text-[#EA4335]"
           onClick={() => setDeleteAllAlert(true)}
         >
-          Удалить все
+          {text.deleteAll[userLanguage]}
         </button>
         <button className="btn_2" onClick={() => setPasswordModal(true)}>
-          Синхронизация
+          {text.sync[userLanguage]}
         </button>
 
-        <ThemeToggle theme={theme} />
+        <ThemeToggle userLanguage={userLanguage} text={text} theme={theme} />
+
+        <LanguageToogle />
       </div>
-
-      {mainCurrency && (
-        <button
-          className="mt-4 ml-auto block bg-black/5 aspect-square px-4 h-10 rounded-lg leading-none transition-colors hover:bg-black/10 disabled:hidden dark:bg-black dark:text-white"
-          onClick={() => setModal(false)}
-          disabled={!mainCurrency}
-        >
-          Сохранить
-        </button>
-      )}
     </>
   );
 }

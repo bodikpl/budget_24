@@ -2,16 +2,24 @@ import { useState } from "react";
 import { useLocalStorage } from "usehooks-ts";
 import Modal from "./Modal";
 import TransactionModalContent from "../ModalContents/TransactionModalContent";
-import { Account, Transaction } from "../../lib/types";
+import { Account, Language, TextType, Transaction } from "../../lib/types";
 import { getFormattedDates } from "../../lib/fn";
 import { ExpenseIcon, IncomeIcon } from "./Icons";
 
-type TransactionCardProps = { transaction: Transaction };
+type TransactionCardProps = {
+  userLanguage: Language;
+  text: TextType;
+  transaction: Transaction;
+};
 
-export default function TransactionCard({ transaction }: TransactionCardProps) {
+export default function TransactionCard({
+  userLanguage,
+  text,
+  transaction,
+}: TransactionCardProps) {
   const [transactionModal, setTransactionModal] = useState(false);
 
-  const formattedDate = getFormattedDates(transaction.date);
+  const formattedDate = getFormattedDates(transaction.date, userLanguage);
 
   const [localAccounts] = useLocalStorage<Account[]>("localAccounts", []);
   const transactionAccount = localAccounts.filter(
@@ -26,6 +34,8 @@ export default function TransactionCard({ transaction }: TransactionCardProps) {
           setModal={setTransactionModal}
           node={
             <TransactionModalContent
+              userLanguage={userLanguage}
+              text={text}
               transactionType={transaction.transactionType}
               transaction={transaction}
               setModal={setTransactionModal}

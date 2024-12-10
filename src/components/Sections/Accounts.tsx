@@ -1,18 +1,20 @@
 import { useState } from "react";
-import Modal from "../Widgets/Modal";
-import AccountModalContent from "../ModalContents/AccountModalContent";
 import { useLocalStorage } from "usehooks-ts";
-import { Account } from "../../lib/types";
+import AccountModalContent from "../ModalContents/AccountModalContent";
+import Modal from "../Widgets/Modal";
 import AccountCard from "../Widgets/AccountCard";
+import { Account, Language, TextType } from "../../lib/types";
 
-function Accounts() {
+type AccountsProps = { userLanguage: Language; text: TextType };
+
+export default function Accounts({ userLanguage, text }: AccountsProps) {
   const [modal, setModal] = useState(false);
   const [localAccounts] = useLocalStorage<Account[]>("localAccounts", []);
   return (
     <>
       {modal && (
         <Modal
-          title="Добавить счет"
+          title={text.addAccount[userLanguage]}
           setModal={setModal}
           node={<AccountModalContent setModal={setModal} />}
         />
@@ -20,7 +22,7 @@ function Accounts() {
 
       <section>
         <div className="flex justify-between items-end">
-          <h3>Счета</h3>
+          <h3>{text.accounts[userLanguage]}</h3>
           <button className="btn_1" onClick={() => setModal(true)}>
             +
           </button>
@@ -33,10 +35,11 @@ function Accounts() {
             ))}
           </div>
         ) : (
-          <p className="text-neutral-500">Добавьте первый счет</p>
+          <p className="text-neutral-500">
+            {text.addFirstAccount[userLanguage]}
+          </p>
         )}
       </section>
     </>
   );
 }
-export default Accounts;

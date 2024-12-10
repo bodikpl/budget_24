@@ -1,3 +1,14 @@
+export type Language = "ua" | "ru" | "eng" | "pl";
+
+interface Translations {
+  ua: string;
+  ru: string;
+  eng: string;
+  pl: string;
+}
+
+export type TextType = Record<string, Translations>;
+
 export type Currency = { id: string; title: string; exchangeRate: number };
 
 export type Balance = {

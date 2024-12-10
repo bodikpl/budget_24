@@ -11,22 +11,43 @@ import {
   isSameMonth,
   isSameDay,
 } from "date-fns";
-import { ru } from "date-fns/locale";
+import { ru, uk, pl, enUS } from "date-fns/locale";
 import { cn } from "../../lib/utils";
+import { Language, TextType } from "../../lib/types";
 
 type CalendarProps = {
+  userLanguage: Language;
+  text: TextType;
   selected: Date;
   onDateSelect: React.Dispatch<React.SetStateAction<Date>>;
   setModal: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export default function Calendar({
+  userLanguage,
+  text,
   selected,
   onDateSelect,
   setModal,
 }: CalendarProps) {
   const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
   const today = new Date();
+
+  const getSelectedLocale = () => {
+    switch (userLanguage) {
+      case "ru":
+        return ru;
+      case "pl":
+        return pl;
+      case "ua":
+        return uk;
+      case "eng":
+        return enUS;
+
+      default:
+        return ru;
+    }
+  };
 
   const renderHeader = () => {
     return (
@@ -38,7 +59,7 @@ export default function Calendar({
           <ChewronLeftIcon />
         </button>
         <div className="font-aptosSemiBold capitalize text-lg">
-          {format(currentMonth, "LLLL yyyy", { locale: ru })}
+          {format(currentMonth, "LLLL yyyy", { locale: getSelectedLocale() })}
         </div>
         <button
           onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
@@ -50,8 +71,19 @@ export default function Calendar({
     );
   };
 
+  const getDaysOfWeek = (locale: string): string[] => {
+    const daysOfWeekMap: Record<string, string[]> = {
+      ru: ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"],
+      pl: ["Pn", "Wt", "Śr", "Cz", "Pt", "So", "Nd"],
+      ua: ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Нд"],
+      eng: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    };
+
+    return daysOfWeekMap[locale] || daysOfWeekMap.eng; // Возвращаем массив для выбранной локали, или по умолчанию английский
+  };
+
   const renderDaysOfWeek = () => {
-    const daysOfWeek = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
+    const daysOfWeek = getDaysOfWeek(userLanguage);
     return (
       <div className="grid grid-cols-7 text-center mb-2 font-aptosSemiBold">
         {daysOfWeek.map((day, index) => (
@@ -79,8 +111,9 @@ export default function Calendar({
           <div
             key={day.toString()}
             className={`${
-              isSameDay(day, today) && "text-lg bg-neutral-100"
-            } rounded-full shrink-0 aspect-square flex items-center justify-center cursor-pointer leading-none m-px ${
+              isSameDay(day, today) &&
+              "text-lg bg-neutral-100 dark:bg-neutral-500"
+            } rounded-full shrink-0 aspect-square flex items-center justify-center cursor-pointer leading-none m-px  ${
               isSameDay(day, selected ?? new Date())
                 ? cn("ring-2 ring-[#EA4335]/80 bg-[#EA4335]/20")
                 : !isSameMonth(day, monthStart) && "text-gray-400"
@@ -122,7 +155,7 @@ export default function Calendar({
 
       <div className="mt-4 flex gap-2">
         <button className="btn_2" onClick={onTodayClick}>
-          Сегодня
+          {text.today[userLanguage]}
         </button>
         <button
           disabled={!selected}
@@ -133,7 +166,7 @@ export default function Calendar({
             }
           }}
         >
-          Установить
+          {text.set[userLanguage]}
         </button>
       </div>
     </div>

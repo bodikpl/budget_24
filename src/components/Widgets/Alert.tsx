@@ -1,3 +1,6 @@
+import { text } from "../../lib/lang";
+import { useCurrentLanguage } from "../../lib/LangContext";
+
 type ModalProps = {
   title: string;
   dascription: string;
@@ -11,6 +14,7 @@ export default function Alert({
   onClose,
   onConfirm,
 }: ModalProps) {
+  const { userLanguage } = useCurrentLanguage();
   return (
     <div className="fixed flex items-center p-6 bg-black/50 backdrop-blur inset-0 z-10">
       <div className="bg-white dark:bg-neutral-700 dark:text-white p-4 rounded-xl max-w-lg mx-auto">
@@ -24,10 +28,10 @@ export default function Alert({
             className="btn_2 border border-[#EA4335] text-[#EA4335]"
             onClick={() => onConfirm()}
           >
-            Подтвердить
+            {text.confirm[userLanguage]}
           </button>
           <button className="btn_2" onClick={() => onClose(false)}>
-            Отменить
+            {text.cancel[userLanguage]}
           </button>
         </div>
       </div>

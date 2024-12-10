@@ -1,16 +1,22 @@
 import { useState } from "react";
 import Modal from "../Widgets/Modal";
 import TotalCard from "../Widgets/TotalCard";
-import { Currency, Transaction } from "../../lib/types";
+import { Currency, Language, TextType, Transaction } from "../../lib/types";
 import { useLocalStorage } from "usehooks-ts";
 import TransactionModalContent from "../ModalContents/TransactionModalContent";
 import { calculateSumsInCurrencies } from "../../lib/fn";
 
 type TotalsProps = {
+  userLanguage: Language;
+  text: TextType;
   transactions: Transaction[];
 };
 
-export default function Totals({ transactions }: TotalsProps) {
+export default function Totals({
+  transactions,
+  userLanguage,
+  text,
+}: TotalsProps) {
   const [incomeModal, setIncomeModal] = useState(false);
   const [expensesModal, setExpensesModal] = useState(false);
 
@@ -35,10 +41,12 @@ export default function Totals({ transactions }: TotalsProps) {
     <>
       {incomeModal && (
         <Modal
-          title="Добавить доход"
+          title={text.addIncome[userLanguage]}
           setModal={setIncomeModal}
           node={
             <TransactionModalContent
+              userLanguage={userLanguage}
+              text={text}
               transactionType="income"
               setModal={setIncomeModal}
             />
@@ -47,10 +55,12 @@ export default function Totals({ transactions }: TotalsProps) {
       )}
       {expensesModal && (
         <Modal
-          title="Внести расход"
+          title={text.addExpense[userLanguage]}
           setModal={setExpensesModal}
           node={
             <TransactionModalContent
+              userLanguage={userLanguage}
+              text={text}
               transactionType="expense"
               setModal={setExpensesModal}
             />
@@ -60,7 +70,7 @@ export default function Totals({ transactions }: TotalsProps) {
 
       <section className="bg-white dark:bg-neutral-800 dark:text-white shadow-lg p-2 rounded-xl flex gap-2">
         <TotalCard
-          title="Доходы"
+          title={text.incomes[userLanguage]}
           color="#dcfce7"
           amount={
             incomeTotals.filter(
@@ -70,7 +80,7 @@ export default function Totals({ transactions }: TotalsProps) {
           setModal={setIncomeModal}
         />
         <TotalCard
-          title="Расходы"
+          title={text.expenses[userLanguage]}
           color="#fee2e2"
           amount={
             expensesTotals.filter(

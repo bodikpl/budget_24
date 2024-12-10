@@ -1,10 +1,15 @@
 import { useLocalStorage } from "usehooks-ts";
+import { Language, TextType } from "../../lib/types";
 
 type BudgetModalContentProps = {
+  userLanguage: Language;
+  text: TextType;
   setModal: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export default function BudgetModalContent({
+  userLanguage,
+  text,
   setModal,
 }: BudgetModalContentProps) {
   const [localBudget, setLocalBudget] = useLocalStorage<string | number>(
@@ -18,10 +23,10 @@ export default function BudgetModalContent({
 
   return (
     <>
-      <h3>Сумма расходов на месяц</h3>
+      <h3>{text.monthlyExpenses[userLanguage]}</h3>
       <input
         type="number"
-        placeholder="Введите планируемую сумму"
+        placeholder={text.enterPlannedAmount[userLanguage]}
         className="w-full dark:bg-transparent dark:text-white"
         value={localBudget === 0 ? "" : localBudget}
         onChange={(e) => handleBudgetChange(e.target.value)}
@@ -31,7 +36,7 @@ export default function BudgetModalContent({
         onClick={() => setModal(false)}
         disabled={!localBudget}
       >
-        Сохранить
+        {text.save[userLanguage]}
       </button>
     </>
   );

@@ -1,16 +1,18 @@
 import { useLocalStorage } from "usehooks-ts";
 
-function TotalCard({
-  title,
-  color,
-  amount,
-  setModal,
-}: {
+type TotalCardProps = {
   title: string;
   color: string;
   amount: number;
   setModal: React.Dispatch<React.SetStateAction<boolean>>;
-}) {
+};
+
+export default function TotalCard({
+  title,
+  color,
+  amount,
+  setModal,
+}: TotalCardProps) {
   const [localMainCurrency] = useLocalStorage("localMainCurrency", "");
 
   return (
@@ -36,4 +38,3 @@ function TotalCard({
     </div>
   );
 }
-export default TotalCard;

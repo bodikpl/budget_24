@@ -1,12 +1,16 @@
-import { Currency } from "../../lib/types";
+import { Currency, Language, TextType } from "../../lib/types";
 
 type BalanceModalContentProps = {
+  userLanguage: Language;
+  text: TextType;
   mainCurrency: string;
   balance: number;
   localCurrency: Currency[];
 };
 
 export default function BalanceModalContent({
+  userLanguage,
+  text,
   mainCurrency,
   balance,
   localCurrency,
@@ -39,7 +43,6 @@ export default function BalanceModalContent({
   };
 
   const convertedAmounts = convertAmount(balance, mainCurrency, localCurrency);
-
   return (
     <>
       {convertedAmounts.length > 0 ? (
@@ -51,7 +54,7 @@ export default function BalanceModalContent({
           ))}
         </>
       ) : (
-        <p>Сначала выберите валюту и добавьте счета</p>
+        <p>{text.selectCurrencyAndAddAccounts[userLanguage]}</p>
       )}
     </>
   );

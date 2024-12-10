@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Modal from "../Widgets/Modal";
 import TransactionCard from "../Widgets/TransactionCard";
-import { Transaction } from "../../lib/types";
+import { Language, TextType, Transaction } from "../../lib/types";
 import {
   FilterIcon,
   SortByDate,
@@ -10,9 +10,17 @@ import {
 } from "../Widgets/Icons";
 import { isSameDay, isSameMonth, isSameYear } from "date-fns";
 
-type TransactionsProps = { transactions: Transaction[] };
+type TransactionsProps = {
+  userLanguage: Language;
+  text: TextType;
+  transactions: Transaction[];
+};
 
-export default function Transactions({ transactions }: TransactionsProps) {
+export default function Transactions({
+  userLanguage,
+  text,
+  transactions,
+}: TransactionsProps) {
   const [filterModal, setFilterModal] = useState(false);
 
   const [filter, setFilter] = useState<"day" | "month" | "year" | "all">(
@@ -75,11 +83,11 @@ export default function Transactions({ transactions }: TransactionsProps) {
     <>
       {filterModal && (
         <Modal
-          title="Фильтр"
+          title={text.filter[userLanguage]}
           setModal={setFilterModal}
           node={
             <>
-              <p>По дате</p>
+              <p>{text.byDate[userLanguage]}</p>
               <div className="mt-1 flex gap-2">
                 <button
                   onClick={() => setFilter("all")}
@@ -87,7 +95,7 @@ export default function Transactions({ transactions }: TransactionsProps) {
                     filter === "all" ? "ring-2 ring-neutral-500" : ""
                   }`}
                 >
-                  Все
+                  {text.all[userLanguage]}
                 </button>
                 <button
                   onClick={() => setFilter("day")}
@@ -95,7 +103,7 @@ export default function Transactions({ transactions }: TransactionsProps) {
                     filter === "day" ? "ring-2 ring-neutral-500" : ""
                   }`}
                 >
-                  Сегодня
+                  {text.today[userLanguage]}
                 </button>
                 <button
                   onClick={() => setFilter("month")}
@@ -103,7 +111,7 @@ export default function Transactions({ transactions }: TransactionsProps) {
                     filter === "month" ? "ring-2 ring-neutral-500" : ""
                   }`}
                 >
-                  Месяц
+                  {text.month[userLanguage]}
                 </button>
                 <button
                   onClick={() => setFilter("year")}
@@ -111,11 +119,11 @@ export default function Transactions({ transactions }: TransactionsProps) {
                     filter === "year" ? "ring-2 ring-neutral-500" : ""
                   }`}
                 >
-                  Год
+                  {text.year[userLanguage]}
                 </button>
               </div>
 
-              <p className="mt-4">По типу транзакции</p>
+              <p className="mt-4">{text.byTransactionType[userLanguage]}</p>
               <div className="mt-1 flex gap-2">
                 <button
                   onClick={() => {
@@ -125,7 +133,7 @@ export default function Transactions({ transactions }: TransactionsProps) {
                     type === "all" ? "ring-2 ring-neutral-400" : ""
                   }`}
                 >
-                  Все
+                  {text.all[userLanguage]}
                 </button>
                 <button
                   onClick={() => {
@@ -135,7 +143,7 @@ export default function Transactions({ transactions }: TransactionsProps) {
                     type === "expense" ? "ring-2 ring-neutral-400" : ""
                   }`}
                 >
-                  Расходы
+                  {text.expenses[userLanguage]}
                 </button>
                 <button
                   onClick={() => {
@@ -145,7 +153,7 @@ export default function Transactions({ transactions }: TransactionsProps) {
                     type === "income" ? "ring-2 ring-neutral-400" : ""
                   }`}
                 >
-                  Доходы
+                  {text.incomes[userLanguage]}
                 </button>
               </div>
             </>
@@ -155,7 +163,7 @@ export default function Transactions({ transactions }: TransactionsProps) {
 
       <section className="w-full">
         <div className="flex justify-between items-center">
-          <h3>Транзакции</h3>
+          <h3>{text.transactions[userLanguage]}</h3>
 
           <div className="flex gap-4">
             <button
@@ -177,11 +185,16 @@ export default function Transactions({ transactions }: TransactionsProps) {
         {transactions.length > 0 ? (
           <div className="mt-2 bg-white dark:bg-neutral-800 shadow-lg rounded-lg">
             {sortedTransactions.map((transaction) => (
-              <TransactionCard key={transaction.id} transaction={transaction} />
+              <TransactionCard
+                userLanguage={userLanguage}
+                text={text}
+                key={transaction.id}
+                transaction={transaction}
+              />
             ))}
           </div>
         ) : (
-          <p className="text-neutral-500">Транзакции отсутствуют</p>
+          <p className="text-neutral-500">{text.noTansactions[userLanguage]}</p>
         )}
       </section>
     </>

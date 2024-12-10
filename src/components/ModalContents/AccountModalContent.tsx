@@ -4,6 +4,8 @@ import { useState } from "react";
 import { Account } from "../../lib/types";
 import { v4 as uuidv4 } from "uuid";
 import Alert from "../Widgets/Alert";
+import { useCurrentLanguage } from "../../lib/LangContext";
+import { text } from "../../lib/lang";
 
 type AccountModalContentProps = {
   setModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -16,6 +18,7 @@ export default function AccountModalContent({
   editMode,
   account,
 }: AccountModalContentProps) {
+  const { userLanguage } = useCurrentLanguage();
   const [localMainCurrency] = useLocalStorage("localMainCurrency", "");
   const [localAccounts, setLocalAccounts] = useLocalStorage<Account[]>(
     "localAccounts",
@@ -74,8 +77,8 @@ export default function AccountModalContent({
         <>
           {deleteAlert && (
             <Alert
-              title="Удаление счета"
-              dascription="Вы действительно хотите удалить счет?"
+              title={text.accountDeletion[userLanguage]}
+              dascription={text.confirmAccountDeletion[userLanguage]}
               onClose={() => setDeleteAlert(false)}
               onConfirm={() => {
                 setModal(false);
@@ -86,10 +89,10 @@ export default function AccountModalContent({
 
           <div className="flex gap-2 items-end">
             <div className="w-3/4">
-              <h3>Название счета</h3>
+              <h3>{text.accountName[userLanguage]}</h3>
               <input
                 type="text"
-                placeholder="Название"
+                placeholder={text.name[userLanguage]}
                 className="input text-lg mt-1"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
@@ -97,10 +100,10 @@ export default function AccountModalContent({
             </div>
 
             <div>
-              <p>Начальный баланс</p>
+              <p>{text.initialBalance[userLanguage]}</p>
               <input
                 type="number"
-                placeholder="Сумма"
+                placeholder={text.amount[userLanguage]}
                 className="input text-lg mt-1"
                 value={initialBalance}
                 onChange={(e) => setInitialBalance(e.target.value)}
@@ -108,7 +111,7 @@ export default function AccountModalContent({
             </div>
           </div>
 
-          <p className="mt-4">Валюта счета</p>
+          <p className="mt-4">{text.accountCurrency[userLanguage]}</p>
           <div className="mt-1 grid grid-cols-4 gap-4">
             {CURRENCY.map(({ id, title }) => (
               <button
@@ -123,7 +126,7 @@ export default function AccountModalContent({
             ))}
           </div>
 
-          <p className="mt-4">Цвет</p>
+          <p className="mt-4">{text.color[userLanguage]}</p>
           <div className="mt-1 flex justify-between">
             {COLORS.map((el) => (
               <button
@@ -144,7 +147,7 @@ export default function AccountModalContent({
                 onClick={() => setDeleteAlert(true)}
                 disabled={!title || !selectedCurrency}
               >
-                Удалить
+                {text.delete[userLanguage]}
               </button>
             )}
             <button
@@ -152,12 +155,12 @@ export default function AccountModalContent({
               onClick={handleSaveAccount}
               disabled={!title || !selectedCurrency}
             >
-              {editMode ? "Изменить" : "Сохранить"}
+              {editMode ? text.edit[userLanguage] : text.save[userLanguage]}
             </button>
           </div>
         </>
       ) : (
-        "Сначала выберите основную валюту в настройках"
+        `${text.selectPrimaryCurrency[userLanguage]}`
       )}
     </>
   );

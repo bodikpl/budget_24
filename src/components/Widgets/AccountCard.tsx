@@ -1,14 +1,15 @@
 import { useState } from "react";
-
-import { Account, Transaction } from "../../lib/types";
-import Modal from "./Modal";
-
 import { useLocalStorage } from "usehooks-ts";
+import Modal from "./Modal";
 import AccountModalContent from "../ModalContents/AccountModalContent";
+import { Account, Transaction } from "../../lib/types";
+import { useCurrentLanguage } from "../../lib/LangContext";
+import { text } from "../../lib/lang";
 
 type AccountCardProps = { account: Account };
 
 export default function AccountCard({ account }: AccountCardProps) {
+  const { userLanguage } = useCurrentLanguage();
   const [modal, setModal] = useState(false);
   const [localTransactions] = useLocalStorage<Transaction[]>(
     "localTransactions",
@@ -36,7 +37,7 @@ export default function AccountCard({ account }: AccountCardProps) {
     <>
       {modal && (
         <Modal
-          title="Счет"
+          title={text.account[userLanguage]}
           setModal={setModal}
           node={
             <AccountModalContent

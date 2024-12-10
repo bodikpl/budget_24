@@ -1,6 +1,5 @@
 import { differenceInCalendarDays, format } from "date-fns";
 import { Currency, Transaction } from "./types";
-import { ru } from "date-fns/locale";
 
 export const calculateSumsInCurrencies = (
   transactions: Transaction[],
@@ -33,26 +32,31 @@ export const calculateSumsInCurrencies = (
   return sums;
 };
 
-export const getFormattedDates = (date: Date): string => {
+export const getFormattedDates = (date: Date, locale: string): string => {
   const today = new Date();
   const diffDays = differenceInCalendarDays(date, today);
 
+  // Маппинг локализованных названий
+  const localeMap: Record<string, Record<string, string>> = {
+    ru: { today: "Сегодня", tomorrow: "Завтра", yesterday: "Вчера" },
+    pl: { today: "Dzisiaj", tomorrow: "Jutro", yesterday: "Wczoraj" },
+    ua: { today: "Сьогодні", tomorrow: "Завтра", yesterday: "Вчора" },
+    eng: { today: "Today", tomorrow: "Tomorrow", yesterday: "Yesterday" },
+  };
+
+  // Получаем локализованную строку в зависимости от дня
+  const getLocalizedDate = (key: string) =>
+    localeMap[locale]?.[key] || localeMap.eng[key];
+
   let datePrefix = "";
   if (diffDays === 0) {
-    datePrefix = "Сегодня";
+    datePrefix = getLocalizedDate("today");
   } else if (diffDays === 1) {
-    datePrefix = "Завтра";
-  } else if (diffDays === 2) {
-    datePrefix = "Послезавтра";
+    datePrefix = getLocalizedDate("tomorrow");
   } else if (diffDays === -1) {
-    datePrefix = "Вчера";
-  } else if (diffDays === -2) {
-    datePrefix = "Позавчера";
+    datePrefix = getLocalizedDate("yesterday");
   } else {
-    const dayName = format(date, "dd.MM.yy", { locale: ru });
-    // Приводим его к виду с большой буквы
-    datePrefix =
-      dayName.charAt(0).toUpperCase() + dayName.slice(1).toLowerCase();
+    datePrefix = format(date, "dd.MM.yy");
   }
 
   return datePrefix;

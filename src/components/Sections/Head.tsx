@@ -4,10 +4,19 @@ import Modal from "../Widgets/Modal";
 import SettingsModalContent from "../ModalContents/SettingsModalContent";
 import BudgetModalContent from "../ModalContents/BudgetModalContent";
 import BalanceModalContent from "../ModalContents/BalanceModalContent";
-import { Account, Balance, Currency, Transaction } from "../../lib/types";
+import {
+  Account,
+  Balance,
+  Currency,
+  Language,
+  TextType,
+  Transaction,
+} from "../../lib/types";
 import { calculateSumsInCurrencies } from "../../lib/fn";
 
-export default function Head({ theme }: { theme: string }) {
+type HeadProps = { theme: string; userLanguage: Language; text: TextType };
+
+export default function Head({ theme, userLanguage, text }: HeadProps) {
   const [settingsModal, setSettingsModal] = useState(false);
   const [budgetModal, setBudgetModal] = useState(false);
   const [balanceModal, setBalanceModal] = useState(false);
@@ -117,26 +126,39 @@ export default function Head({ theme }: { theme: string }) {
     <>
       {settingsModal && (
         <Modal
-          title="Настройки"
+          title={text.settings[userLanguage]}
           setModal={setSettingsModal}
           node={
-            <SettingsModalContent setModal={setSettingsModal} theme={theme} />
+            <SettingsModalContent
+              userLanguage={userLanguage}
+              text={text}
+              setModal={setSettingsModal}
+              theme={theme}
+            />
           }
         />
       )}
       {budgetModal && (
         <Modal
-          title="Бюджет"
+          title={text.budget[userLanguage]}
           setModal={setBudgetModal}
-          node={<BudgetModalContent setModal={setBudgetModal} />}
+          node={
+            <BudgetModalContent
+              userLanguage={userLanguage}
+              text={text}
+              setModal={setBudgetModal}
+            />
+          }
         />
       )}
       {balanceModal && (
         <Modal
-          title="Баланс"
+          title={text.balance[userLanguage]}
           setModal={setBalanceModal}
           node={
             <BalanceModalContent
+              userLanguage={userLanguage}
+              text={text}
               mainCurrency={localMainCurrency}
               balance={balance}
               localCurrency={localCurrency}
@@ -154,7 +176,9 @@ export default function Head({ theme }: { theme: string }) {
             BS
           </button>
           <div onClick={() => setBalanceModal(true)} className="cursor-pointer">
-            <p className="font-aptosSemiBold text-neutral-500">Баланс</p>
+            <p className="font-aptosSemiBold text-neutral-500">
+              {text.balance[userLanguage]}
+            </p>
             <p className="text-xl font-aptosBold leading-none">
               {localAccounts.length > 0 ? balance.toFixed(1) : 0}{" "}
               {localMainCurrency ? localMainCurrency : ""}
@@ -167,7 +191,8 @@ export default function Head({ theme }: { theme: string }) {
           onClick={() => setBudgetModal(true)}
         >
           <p className={"font-aptosSemiBold text-neutral-500"}>
-            Бюджет {localBudget ? `${budgetUsagePercentage * -1}%` : ""}
+            {text.budget[userLanguage]}{" "}
+            {localBudget ? `${budgetUsagePercentage * -1}%` : ""}
           </p>
           {localBudget && (
             <p className="text-xl font-aptosBold leading-none">
