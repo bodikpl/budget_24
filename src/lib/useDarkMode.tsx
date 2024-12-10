@@ -41,6 +41,15 @@ export const useDarkMode = () => {
       document.body.classList.remove("dark");
       localStorage.setItem("theme", "light");
     }
+
+    // Обновление мета-тега theme-color
+    const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+    if (metaThemeColor) {
+      metaThemeColor.setAttribute(
+        "content",
+        isDarkMode ? "#000000" : "#f5f5f5"
+      );
+    }
   }, [isDarkMode]);
 
   return { isDarkMode, toggleDarkMode };
