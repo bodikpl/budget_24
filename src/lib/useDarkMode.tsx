@@ -34,21 +34,35 @@ export const useDarkMode = () => {
   }, []);
 
   useEffect(() => {
-    if (isDarkMode) {
-      document.body.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      document.body.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    }
+    // Обновляем цвет темы в манифесте
+    const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+    const themeColorMetaManifest = document.querySelector(
+      'link[rel="manifest"]'
+    );
 
-    // Обновление мета-тега theme-color
-    const metaThemeColor = document.querySelector('meta[name="theme-color"]');
-    if (metaThemeColor) {
-      metaThemeColor.setAttribute(
+    if (themeColorMeta) {
+      themeColorMeta.setAttribute(
         "content",
         isDarkMode ? "#000000" : "#f5f5f5"
       );
+    }
+
+    // Здесь можно попробовать вручную обновить ссылку на манифест, если нужно:
+    if (themeColorMetaManifest) {
+      const link = themeColorMetaManifest.getAttribute("href");
+      if (link) {
+        fetch(link)
+          .then((response) => response.json())
+          .then((manifest) => {
+            // Меняем theme_color в манифесте
+            manifest.theme_color = isDarkMode ? "#000000" : "#f5f5f5";
+            // Переопределяем манифест на лету
+            const newManifest = document.createElement("script");
+            newManifest.type = "application/json";
+            newManifest.textContent = JSON.stringify(manifest);
+            document.head.appendChild(newManifest);
+          });
+      }
     }
   }, [isDarkMode]);
 
