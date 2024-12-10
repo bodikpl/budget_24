@@ -11,7 +11,6 @@ import LanguageToogle from "../Widgets/LanguageToogle";
 type SettingsModalContentProps = {
   userLanguage: Language;
   text: TextType;
-  setModal: React.Dispatch<React.SetStateAction<boolean>>;
   theme: string;
 };
 
@@ -19,7 +18,6 @@ export default function SettingsModalContent({
   userLanguage,
   text,
   theme,
-  setModal,
 }: SettingsModalContentProps) {
   const [localMainCurrency, setLocalMainCurrency] = useLocalStorage(
     "localMainCurrency",

@@ -132,7 +132,6 @@ export default function Head({ theme, userLanguage, text }: HeadProps) {
             <SettingsModalContent
               userLanguage={userLanguage}
               text={text}
-              setModal={setSettingsModal}
               theme={theme}
             />
           }
