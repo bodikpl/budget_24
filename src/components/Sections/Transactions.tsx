@@ -5,9 +5,9 @@ import { Language, TextType, Transaction } from "../../lib/types";
 import {
   FilterIcon,
   ChartIcon,
-  SortByDate,
-  SortDownIcon,
-  SortUpIcon,
+  // SortByDate,
+  // SortDownIcon,
+  // SortUpIcon,
 } from "../Widgets/Icons";
 import { isSameDay, isSameMonth, isSameYear } from "date-fns";
 import GroupedTransactions from "../Widgets/GroupedTransactions";
@@ -29,7 +29,7 @@ export default function Transactions({
     "month"
   );
   const [type, setType] = useState<"all" | "expense" | "income">("all");
-  const [sortOrder, setSortOrder] = useState<"none" | "asc" | "desc">("none");
+  // const [sortOrder, setSortOrder] = useState<"none" | "asc" | "desc">("none");
   const [chartReport, setChartReport] = useState(false);
 
   const today = new Date();
