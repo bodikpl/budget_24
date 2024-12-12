@@ -4,11 +4,13 @@ import TransactionCard from "../Widgets/TransactionCard";
 import { Language, TextType, Transaction } from "../../lib/types";
 import {
   FilterIcon,
+  ChartIcon,
   SortByDate,
   SortDownIcon,
   SortUpIcon,
 } from "../Widgets/Icons";
 import { isSameDay, isSameMonth, isSameYear } from "date-fns";
+import GroupedTransactions from "../Widgets/GroupedTransactions";
 
 type TransactionsProps = {
   userLanguage: Language;
@@ -28,6 +30,7 @@ export default function Transactions({
   );
   const [type, setType] = useState<"all" | "expense" | "income">("all");
   const [sortOrder, setSortOrder] = useState<"none" | "asc" | "desc">("none");
+  const [chartReport, setChartReport] = useState(false);
 
   const today = new Date();
 
@@ -162,10 +165,16 @@ export default function Transactions({
       )}
 
       <section className="w-full">
-        <div className="flex justify-between items-center">
+        <div className="mt-4 flex justify-between items-center">
           <h3>{text.transactions[userLanguage]}</h3>
 
           <div className="flex gap-4">
+            <button
+              className="btn_1 flex justify-center items-center"
+              onClick={() => setChartReport(!chartReport)}
+            >
+              <ChartIcon />
+            </button>
             <button
               className="btn_1 flex justify-center items-center"
               onClick={toggleSortOrder}
@@ -182,17 +191,30 @@ export default function Transactions({
             </button>
           </div>
         </div>
+
         {transactions.length > 0 ? (
-          <div className="mt-2 bg-white dark:bg-neutral-800 shadow-lg rounded-lg">
-            {sortedTransactions.map((transaction) => (
-              <TransactionCard
-                userLanguage={userLanguage}
-                text={text}
-                key={transaction.id}
-                transaction={transaction}
-              />
-            ))}
-          </div>
+          <>
+            {chartReport ? (
+              <div className="mt-2 bg-white dark:bg-neutral-800 shadow-lg rounded-lg overflow-hidden">
+                <GroupedTransactions
+                  userLanguage={userLanguage}
+                  text={text}
+                  transactions={transactions}
+                />
+              </div>
+            ) : (
+              <div className="mt-2 bg-white dark:bg-neutral-800 shadow-lg rounded-lg">
+                {sortedTransactions.map((transaction) => (
+                  <TransactionCard
+                    userLanguage={userLanguage}
+                    text={text}
+                    key={transaction.id}
+                    transaction={transaction}
+                  />
+                ))}
+              </div>
+            )}
+          </>
         ) : (
           <p className="text-neutral-500">{text.noTansactions[userLanguage]}</p>
         )}
