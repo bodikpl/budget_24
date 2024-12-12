@@ -62,25 +62,25 @@ export default function Transactions({
 
   // Сортировка
   const sortedTransactions = [...filteredByType].sort((a, b) => {
-    if (sortOrder === "asc") {
-      return a.amount - b.amount; // Сортировка по возрастанию
-    }
-    if (sortOrder === "desc") {
-      return b.amount - a.amount; // Сортировка по убыванию
-    }
+    // if (sortOrder === "asc") {
+    //   return a.amount - b.amount; // Сортировка по возрастанию
+    // }
+    // if (sortOrder === "desc") {
+    //   return b.amount - a.amount; // Сортировка по убыванию
+    // }
     return new Date(b.date).getTime() - new Date(a.date).getTime(); // Исходная сортировка по дате
   });
 
   // Функция для переключения сортировки
-  const toggleSortOrder = () => {
-    if (sortOrder === "none") {
-      setSortOrder("desc"); // Переключаем на убывание
-    } else if (sortOrder === "desc") {
-      setSortOrder("asc"); // Переключаем на возрастание
-    } else {
-      setSortOrder("none"); // Сбрасываем к сортировке по дате
-    }
-  };
+  // const toggleSortOrder = () => {
+  //   if (sortOrder === "none") {
+  //     setSortOrder("desc"); // Переключаем на убывание
+  //   } else if (sortOrder === "desc") {
+  //     setSortOrder("asc"); // Переключаем на возрастание
+  //   } else {
+  //     setSortOrder("none"); // Сбрасываем к сортировке по дате
+  //   }
+  // };
 
   return (
     <>
@@ -175,14 +175,14 @@ export default function Transactions({
             >
               <ChartIcon />
             </button>
-            <button
+            {/* <button
               className="btn_1 flex justify-center items-center"
               onClick={toggleSortOrder}
             >
               {sortOrder === "none" && <SortByDate />}
               {sortOrder === "asc" && <SortUpIcon />}
               {sortOrder === "desc" && <SortDownIcon />}
-            </button>
+            </button> */}
             <button
               className="btn_1 flex justify-center items-center"
               onClick={() => setFilterModal(true)}
