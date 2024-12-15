@@ -27,7 +27,6 @@ export type Account = {
 export type Transaction = {
   id: string;
   transactionType: "income" | "expense";
-  category: string;
   accountId: string;
   currency: string;
   description: string;

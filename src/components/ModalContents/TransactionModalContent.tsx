@@ -4,18 +4,16 @@ import { useLocalStorage } from "usehooks-ts";
 import { Account, Language, TextType, Transaction } from "../../lib/types";
 import Modal from "../Widgets/Modal";
 import AccountSelect from "../Selects/AccountSelect";
-import { EXPENSES_CATEGORIES, INCOME_CATEGORIES } from "../../lib/data";
-import CategoriesSelect from "../Selects/CategoriesSelect";
 import Alert from "../Widgets/Alert";
 import Calendar from "../Widgets/Calendar";
 import { getFormattedDates } from "../../lib/fn";
+import { CalendarIcon } from "../Widgets/Icons";
 
 type TransactionModalContentProps = {
   userLanguage: Language;
   text: TextType;
   transactionType: "income" | "expense";
   setModal: React.Dispatch<React.SetStateAction<boolean>>;
-  editMode?: boolean;
   transaction?: Transaction;
 };
 
@@ -24,11 +22,9 @@ export default function TransactionModalContent({
   text,
   transactionType,
   setModal,
-  editMode,
   transaction,
 }: TransactionModalContentProps) {
   const [accountSelectModal, setAccountSelectModal] = useState(false);
-  const [categoriesSelectModal, setCategoriesSelectModal] = useState(false);
   const [dateSelectModal, setDateSelectModal] = useState(false);
 
   const [localAccounts] = useLocalStorage<Account[]>("localAccounts", []);
@@ -37,10 +33,7 @@ export default function TransactionModalContent({
   )[0];
 
   const [selectedAccount, setSelectedAccount] = useState<null | Account>(
-    editMode ? transactionAccount : null
-  );
-  const [selectedCategory, setSelectedCategory] = useState(
-    transaction ? transaction.category : ""
+    transaction ? transactionAccount : null
   );
   const [description, setDescription] = useState(
     transaction ? transaction.description : ""
@@ -61,21 +54,15 @@ export default function TransactionModalContent({
     setAccountSelectModal(false);
   };
 
-  const handleCategoriesSelect = (value: string) => {
-    setSelectedCategory(value);
-    setCategoriesSelectModal(false);
-  };
-
   const [localTransactions, setLocalTransactions] = useLocalStorage<
     Transaction[]
   >("localTransactions", []);
 
   // Функция для сохранения или обновления транзакции
   const handleSaveTransaction = () => {
-    if (selectedAccount && selectedCategory) {
+    if (selectedAccount) {
       const newTransaction: Transaction = {
-        id: editMode && transaction ? transaction.id : uuidv4(),
-        category: selectedCategory,
+        id: transaction ? transaction.id : uuidv4(),
         accountId: selectedAccount.id,
         currency: selectedAccount.currency,
         description,
@@ -148,28 +135,16 @@ export default function TransactionModalContent({
           node={<AccountSelect setModal={handleAccountSelect} />}
         />
       )}
-      {categoriesSelectModal && (
-        <Modal
-          title={
-            transactionType === "income"
-              ? text.incomeCategories[userLanguage]
-              : text.expenseCategories[userLanguage]
-          }
-          setModal={setCategoriesSelectModal}
-          node={
-            <CategoriesSelect
-              categories={
-                transactionType === "income"
-                  ? INCOME_CATEGORIES
-                  : EXPENSES_CATEGORIES
-              }
-              setModal={handleCategoriesSelect}
-            />
-          }
-        />
-      )}
 
       <div className="flex gap-4">
+        <input
+          type="number"
+          value={amount}
+          autoFocus
+          placeholder={text.amount[userLanguage]}
+          className="input text-xl"
+          onChange={(e) => setAmount(e.target.value)}
+        />
         <button
           style={{
             backgroundColor: selectedAccount
@@ -178,36 +153,12 @@ export default function TransactionModalContent({
               : "#F2F2F2",
             color: selectedAccount ? "white" : "black",
           }}
-          className="btn_2 !w-2/3"
+          className="btn_2"
           onClick={() => setAccountSelectModal(true)}
         >
           {selectedAccount
             ? `${selectedAccount.title}, ${selectedAccount.currency}`
             : text.selectAccount[userLanguage]}
-        </button>
-
-        <input
-          type="number"
-          value={amount}
-          autoFocus
-          placeholder={text.amount[userLanguage]}
-          className="input text-lg !w-1/3"
-          onChange={(e) => setAmount(e.target.value)}
-        />
-      </div>
-
-      <div className="mt-4 flex gap-4">
-        <div className="w-full">
-          <button
-            className="btn_2"
-            onClick={() => setCategoriesSelectModal(true)}
-          >
-            {selectedCategory ? selectedCategory : text.category[userLanguage]}
-          </button>
-        </div>
-
-        <button className="btn_2" onClick={() => setDateSelectModal(true)}>
-          {formatedSelectedDay}
         </button>
       </div>
 
@@ -219,26 +170,33 @@ export default function TransactionModalContent({
         onChange={(e) => setDescription(e.target.value)}
       />
 
+      {transaction && (
+        <button
+          className="mt-4 btn_2 border border-[#EA4335] text-[#EA4335]"
+          onClick={() => setDeleteAlert(true)}
+          // disabled={!title || !selectedCurrency}
+        >
+          {text.delete[userLanguage]}
+        </button>
+      )}
+
       <div className="mt-4 flex gap-4 justify-end">
         <div className="flex gap-4 justify-end">
-          {editMode && (
-            <button
-              className="btn_2 border border-[#EA4335] text-[#EA4335]"
-              onClick={() => setDeleteAlert(true)}
-              // disabled={!title || !selectedCurrency}
-            >
-              {text.delete[userLanguage]}
-            </button>
-          )}
+          <button
+            className="btn_2 gap-4"
+            onClick={() => setDateSelectModal(true)}
+          >
+            <CalendarIcon /> {formatedSelectedDay}
+          </button>
           <button
             className="btn_2"
             onClick={() => {
               setModal(false);
               handleSaveTransaction();
             }}
-            disabled={!selectedAccount || !selectedCategory || !amount}
+            disabled={!selectedAccount || !amount}
           >
-            {editMode ? text.edit[userLanguage] : text.save[userLanguage]}
+            {transaction ? text.edit[userLanguage] : text.save[userLanguage]}
           </button>
         </div>
       </div>

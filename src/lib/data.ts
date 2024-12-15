@@ -7,30 +7,6 @@ export const COLORS = [
   "#000",
 ];
 
-export const INCOME_CATEGORIES = [
-  "Зарплата",
-  "Инвестиции",
-  "Подарок",
-  "Другое",
-];
-
-export const EXPENSES_CATEGORIES = [
-  "Аптека",
-  "Аренда",
-  "Дом",
-  "Другое",
-  "Заправка",
-  "Кафе",
-  "Одежда",
-  "Платежи",
-  "Подарки",
-  "Продукты",
-  "Редкое",
-  "Связь",
-  "Учеба",
-  "Школа",
-];
-
 export const CURRENCY = [
   { id: "1", title: "грн", exchangeRate: 1 },
   { id: "2", title: "pln", exchangeRate: 1 },

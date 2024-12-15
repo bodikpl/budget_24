@@ -4,13 +4,11 @@ import TransactionCard from "../Widgets/TransactionCard";
 import { Language, TextType, Transaction } from "../../lib/types";
 import {
   FilterIcon,
-  ChartIcon,
-  // SortByDate,
-  // SortDownIcon,
-  // SortUpIcon,
+  SortByDate,
+  SortDownIcon,
+  SortUpIcon,
 } from "../Widgets/Icons";
 import { isSameDay, isSameMonth, isSameYear } from "date-fns";
-import GroupedTransactions from "../Widgets/GroupedTransactions";
 
 type TransactionsProps = {
   userLanguage: Language;
@@ -25,12 +23,12 @@ export default function Transactions({
 }: TransactionsProps) {
   const [filterModal, setFilterModal] = useState(false);
 
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc" | "none">("none");
   const [filter, setFilter] = useState<"day" | "month" | "year" | "all">(
     "month"
   );
   const [type, setType] = useState<"all" | "expense" | "income">("all");
   // const [sortOrder, setSortOrder] = useState<"none" | "asc" | "desc">("none");
-  const [chartReport, setChartReport] = useState(false);
 
   const today = new Date();
 
@@ -62,25 +60,25 @@ export default function Transactions({
 
   // Сортировка
   const sortedTransactions = [...filteredByType].sort((a, b) => {
-    // if (sortOrder === "asc") {
-    //   return a.amount - b.amount; // Сортировка по возрастанию
-    // }
-    // if (sortOrder === "desc") {
-    //   return b.amount - a.amount; // Сортировка по убыванию
-    // }
+    if (sortOrder === "asc") {
+      return a.amount - b.amount; // Сортировка по возрастанию
+    }
+    if (sortOrder === "desc") {
+      return b.amount - a.amount; // Сортировка по убыванию
+    }
     return new Date(b.date).getTime() - new Date(a.date).getTime(); // Исходная сортировка по дате
   });
 
   // Функция для переключения сортировки
-  // const toggleSortOrder = () => {
-  //   if (sortOrder === "none") {
-  //     setSortOrder("desc"); // Переключаем на убывание
-  //   } else if (sortOrder === "desc") {
-  //     setSortOrder("asc"); // Переключаем на возрастание
-  //   } else {
-  //     setSortOrder("none"); // Сбрасываем к сортировке по дате
-  //   }
-  // };
+  const toggleSortOrder = () => {
+    if (sortOrder === "none") {
+      setSortOrder("desc"); // Переключаем на убывание
+    } else if (sortOrder === "desc") {
+      setSortOrder("asc"); // Переключаем на возрастание
+    } else {
+      setSortOrder("none"); // Сбрасываем к сортировке по дате
+    }
+  };
 
   return (
     <>
@@ -171,18 +169,12 @@ export default function Transactions({
           <div className="flex gap-4">
             <button
               className="btn_1 flex justify-center items-center"
-              onClick={() => setChartReport(!chartReport)}
-            >
-              <ChartIcon />
-            </button>
-            {/* <button
-              className="btn_1 flex justify-center items-center"
               onClick={toggleSortOrder}
             >
               {sortOrder === "none" && <SortByDate />}
               {sortOrder === "asc" && <SortUpIcon />}
               {sortOrder === "desc" && <SortDownIcon />}
-            </button> */}
+            </button>
             <button
               className="btn_1 flex justify-center items-center"
               onClick={() => setFilterModal(true)}
@@ -193,28 +185,16 @@ export default function Transactions({
         </div>
 
         {transactions.length > 0 ? (
-          <>
-            {chartReport ? (
-              <div className="mt-2 bg-white dark:bg-neutral-800 shadow-lg rounded-lg overflow-hidden">
-                <GroupedTransactions
-                  userLanguage={userLanguage}
-                  text={text}
-                  transactions={transactions}
-                />
-              </div>
-            ) : (
-              <div className="mt-2 bg-white dark:bg-neutral-800 shadow-lg rounded-lg">
-                {sortedTransactions.map((transaction) => (
-                  <TransactionCard
-                    userLanguage={userLanguage}
-                    text={text}
-                    key={transaction.id}
-                    transaction={transaction}
-                  />
-                ))}
-              </div>
-            )}
-          </>
+          <div className="mt-2 bg-white dark:bg-neutral-800 shadow-lg rounded-lg">
+            {sortedTransactions.map((transaction) => (
+              <TransactionCard
+                userLanguage={userLanguage}
+                text={text}
+                key={transaction.id}
+                transaction={transaction}
+              />
+            ))}
+          </div>
         ) : (
           <p className="text-neutral-500">{text.noTansactions[userLanguage]}</p>
         )}

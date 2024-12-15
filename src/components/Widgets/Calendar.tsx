@@ -157,7 +157,7 @@ export default function Calendar({
         <button className="btn_2" onClick={onTodayClick}>
           {text.today[userLanguage]}
         </button>
-        <button
+        {/* <button
           disabled={!selected}
           className="btn_2"
           onClick={() => {
@@ -167,7 +167,7 @@ export default function Calendar({
           }}
         >
           {text.set[userLanguage]}
-        </button>
+        </button> */}
       </div>
     </div>
   );
